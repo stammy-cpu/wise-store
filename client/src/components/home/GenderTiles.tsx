@@ -15,6 +15,11 @@ export function GenderTiles() {
               className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-colors" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <h2 className="text-white text-5xl md:text-7xl font-heading font-black tracking-tighter uppercase italic drop-shadow-2xl">
+                MALE
+              </h2>
+            </div>
             <div className="absolute bottom-8 left-1/2 -translate-x-1/2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
               <span className="text-white border-b-2 border-white pb-1 font-bold tracking-widest uppercase text-xs">Shop Collection</span>
             </div>

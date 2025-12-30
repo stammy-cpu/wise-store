@@ -66,7 +66,17 @@ export default function Home() {
                       <div className="aspect-[3/4] rounded-lg mb-4 overflow-hidden relative bg-gray-800 border border-white/10 group-hover:border-purple-500/50 transition-all">
                         <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                         <div className="absolute bottom-0 left-0 right-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                          <Button className="w-full bg-white text-black hover:bg-gray-200 font-bold rounded-none text-xs uppercase tracking-widest">
+                          <Button 
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                              localStorage.setItem('cart', JSON.stringify([...cart, item]));
+                              window.dispatchEvent(new Event('storage'));
+                              alert(`${item.name} added to cart!`);
+                            }}
+                            className="w-full bg-white text-black hover:bg-gray-200 font-bold rounded-none text-xs uppercase tracking-widest"
+                          >
                             Quick Add
                           </Button>
                         </div>
