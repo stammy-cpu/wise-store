@@ -25,14 +25,16 @@ export function Hero() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="max-w-3xl text-white"
         >
-          <h2 className="text-sm md:text-base font-bold tracking-[0.3em] uppercase mb-4 text-purple-300">
+          <h2 className="text-xs md:text-sm font-bold tracking-[0.4em] uppercase mb-6 text-white/90">
             Est. 2020 • Ile-Ife & Lagos
           </h2>
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-extrabold leading-tight mb-6 uppercase tracking-tight">
-            Short and Cool
+          <h1 className="text-6xl md:text-8xl lg:text-9xl font-heading font-extrabold leading-[0.9] mb-8 capitalize tracking-tight">
+            <span className="text-white">Keep it</span> <br/>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-300">short <span className="text-white">and</span> cool</span>
           </h1>
-          <p className="text-lg md:text-xl text-gray-200 mb-10 max-w-lg leading-relaxed font-light">
-            Elevate your wardrobe with our premium collection. Designed for those who lead, inspire, and stand out.
+          <p className="text-sm md:text-base text-gray-300 mb-12 max-w-sm leading-relaxed font-normal">
+            Elevate your wardrobe with our premium collection. <br/>
+            Designed for those who lead, inspire, and stand out.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4">
