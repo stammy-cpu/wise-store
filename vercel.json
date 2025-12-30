@@ -1,9 +1,8 @@
 {
+  "version": 2,
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "env": {
-    "NODE_ENV": "production"
-  },
+  "installCommand": "npm install",
   "functions": {
     "index.cjs": {
       "runtime": "nodejs20.x"
@@ -16,7 +15,15 @@
     },
     {
       "src": "/(.*)",
-      "dest": "index.cjs"
+      "dest": "/client/$1",
+      "continue": true
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/client/index.html"
     }
   ]
 }
