@@ -18,17 +18,17 @@ export function Hero() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 h-full container mx-auto px-6 md:px-8 lg:px-12 flex flex-col justify-center items-start pt-20">
+      <div className="relative z-10 h-full w-full flex flex-col justify-center items-start pt-20 px-4 md:px-6">
         <motion.div 
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="max-w-3xl text-white"
+          className="max-w-4xl text-white"
         >
           <h2 className="text-xs md:text-sm font-bold tracking-[0.4em] uppercase mb-6 text-white/90">
             Est. 2020 • Ile-Ife & Lagos
           </h2>
-          <h1 className="text-6xl md:text-8xl lg:text-9xl font-heading font-extrabold leading-[0.9] mb-8 capitalize tracking-tight">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-extrabold leading-[0.95] mb-8 capitalize tracking-tight">
             <span className="text-white">Keep it</span> <br/>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-300">short <span className="text-white">and</span> cool</span>
           </h1>
