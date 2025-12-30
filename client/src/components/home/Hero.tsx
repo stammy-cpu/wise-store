@@ -9,7 +9,7 @@ export function Hero() {
       {/* Background Image with Deep Purple Overlay */}
       <div className="absolute inset-0">
         <img 
-          src={heroImage} 
+          src="https://i.pinimg.com/1200x/16/14/2e/16142e80f5a00360091b866933f9ebd2.jpg" 
           alt="Bigwise Fashion Hero" 
           className="w-full h-full object-cover object-center"
         />
