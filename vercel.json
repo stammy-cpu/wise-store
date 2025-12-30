@@ -1,6 +1,7 @@
 {
   "version": 2,
   "buildCommand": "npx tsx script/build.ts",
+  "rootDirectory": "./",
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "functions": {
