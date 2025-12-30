@@ -6,13 +6,30 @@ import heroImage from "@assets/generated_images/fashion_brand_hero_banner_with_d
 export function Hero() {
   return (
     <section className="relative h-screen w-full overflow-hidden">
-      {/* Background Image with Deep Purple Overlay */}
+      {/* Background Image/Video with Deep Purple Overlay */}
       <div className="absolute inset-0">
+        {/* Desktop Image */}
         <img 
           src="https://i.pinimg.com/1200x/16/14/2e/16142e80f5a00360091b866933f9ebd2.jpg" 
           alt="Bigwise Fashion Hero" 
-          className="w-full h-full object-cover object-center"
+          className="hidden md:block w-full h-full object-cover object-center"
         />
+        {/* Mobile Video/Image Placeholder */}
+        <div className="block md:hidden w-full h-full">
+          {/* 
+            You can replace the src below with your video link. 
+            Example: src="https://your-video-link.mp4"
+          */}
+          <video
+            src="" 
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover object-center"
+            poster="https://i.pinimg.com/1200x/16/14/2e/16142e80f5a00360091b866933f9ebd2.jpg"
+          />
+        </div>
         <div className="absolute inset-0 bg-gradient-to-r from-[#1a1025]/90 via-[#1a1025]/60 to-[#2a1b3d]/40 mix-blend-multiply" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#1a1025]" />
       </div>
