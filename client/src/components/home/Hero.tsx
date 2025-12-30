@@ -26,11 +26,10 @@ export function Hero() {
           className="max-w-3xl text-white"
         >
           <h2 className="text-sm md:text-base font-bold tracking-[0.3em] uppercase mb-4 text-purple-300">
-            Est. 2025 • Ile-Ife & Lagos
+            Est. 2020 • Ile-Ife & Lagos
           </h2>
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-extrabold leading-tight mb-6">
-            Fashion for the <br/>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">Bold & Wise</span>
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-extrabold leading-tight mb-6 uppercase tracking-tight">
+            Short and Cool
           </h1>
           <p className="text-lg md:text-xl text-gray-200 mb-10 max-w-lg leading-relaxed font-light">
             Elevate your wardrobe with our premium collection. Designed for those who lead, inspire, and stand out.
