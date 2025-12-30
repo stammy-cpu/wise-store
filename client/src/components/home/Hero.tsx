@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import heroImage from "@assets/generated_images/fashion_brand_hero_banner_with_diverse_models.png";
 
+import video001 from "@assets/video001_1767106034345.mp4";
+
 export function Hero() {
   return (
     <section className="relative h-screen w-full overflow-hidden">
@@ -16,12 +18,8 @@ export function Hero() {
         />
         {/* Mobile Video/Image Placeholder */}
         <div className="block md:hidden w-full h-full">
-          {/* 
-            You can replace the src below with your video link. 
-            Example: src="https://your-video-link.mp4"
-          */}
           <video
-            src="" 
+            src={video001} 
             autoPlay
             loop
             muted
