@@ -93,7 +93,7 @@ export function BestSellersCarousel() {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors" />
-                <Button className="absolute bottom-6 left-6 right-6 bg-white text-black hover:bg-purple-100 font-bold translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all">
+                <Button className="absolute bottom-6 left-6 right-6 bg-white text-black hover:bg-purple-100 font-bold translate-y-0 opacity-100 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 transition-all">
                   <ShoppingCart size={16} className="mr-2" /> Add to Cart
                 </Button>
               </div>
