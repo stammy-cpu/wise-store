@@ -1,0 +1,17 @@
+.git
+.gitignore
+README.md
+node_modules
+.env.local
+.env.*.local
+client
+server
+script
+shared
+components.json
+tsconfig.json
+vite.config.ts
+drizzle.config.ts
+postcss.config.js
+tailwind.config.ts
+vite-plugin-meta-images.ts

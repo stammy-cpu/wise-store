@@ -1,0 +1,35 @@
+Create a modern, professional, and trendy fashion brand website for "Bigwise Clothings".  
+The brand name and website name should be "Bigwise".  
+
+Design & Theme:
+- Deep purple primary color palette with white text.  
+- Gradient transitions: deep purple → lighter purple/blue across sections for a professional layered vibe.  
+- Smooth, elegant animations: fade-ins, hover zooms, parallax scroll, section transitions.  
+- Typography: bold, modern sans-serif (e.g., Montserrat, Poppins).  
+
+Pages (minimum 5–6):
+1. Home — Hero banner with brand name "Bigwise", tagline, featured collections, Instagram feed preview, trending items, testimonials, newsletter signup.  
+2. About — Brand story, mission, values, locations (Ile-Ife and Lagos, Nigeria), with animated timeline or milestones.  
+3. Collections — Grid layout showcasing clothing items with hover animations.  
+4. Item Detail Page — Each product should have price, description, size, material, wishlist option, and contact buttons (Direct message on site, WhatsApp, Call).  
+5. Cart — Viewable cart with items, quantities, and checkout preview.  
+6. Contact — Contact form (name, email, message), embedded map showing Ile-Ife and Lagos locations, WhatsApp CTA button, phone number.  
+7. Optional Blog/News — Fashion updates, trends, announcements.  
+
+Features:
+- Instagram feed section: dynamically show latest IG posts (grid or carousel).  
+- Wishlist functionality for users to save favorite items.  
+- Signup/Register page for user accounts.  
+- Direct messaging system so visitors can message Bigwise directly on the website.  
+- WhatsApp CTA button prominently displayed.  
+- Sticky navigation bar with links to all pages.  
+- Footer: simple, with social media icons (Instagram, Facebook, TikTok, Twitter).  
+- Smooth scroll and section transitions.  
+
+Technical:
+- Use HTML, CSS (Tailwind or modern CSS), and JavaScript (React preferred).  
+- Ensure animations are smooth and professional (Framer Motion or CSS transitions).  
+- Code should be clean and easy to deploy on Vercel.  
+- No backend required — static preview only, but structure should allow future backend integration.  
+
+Deliver a complete working prototype that looks polished, trendy, immersive, and ready to impress a fashion client.

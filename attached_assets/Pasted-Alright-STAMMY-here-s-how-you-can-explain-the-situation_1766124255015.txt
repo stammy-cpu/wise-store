@@ -1,0 +1,69 @@
+Alright STAMMY — here’s how you can explain the situation to **Replit** so it understands the deployment issue and can auto‑update your code:
+
+---
+
+### 📝 Message to Replit
+
+**Subject:** Vercel deployment failing due to build script mismatch  
+
+**Body:**
+
+Hi Replit team,  
+
+I’ve been working on my `bigwise` project and deploying it to Vercel. The local build works fine (`npm run build` runs `tsx script/build.ts` and produces `dist/public` for the client and `dist/index.cjs` for the server).  
+
+However, Vercel fails with:  
+```
+Error: Command "npm run build" exited with 1
+```
+
+This happens because Vercel’s build environment doesn’t recognize `tsx script/build.ts` as a standard build command. It expects something like `vite build` or `tsc`.  
+
+---
+
+### ✅ Proposed Fix
+
+Please update the `package.json` build scripts so Vercel can run them correctly:
+
+```json
+"scripts": {
+  "build:client": "vite build",
+  "build:server": "tsc -p tsconfig.json",
+  "build": "npm run build:client && npm run build:server",
+  "dev": "vite"
+}
+```
+
+- `vite build` → builds the frontend into `dist/public`  
+- `tsc` → compiles the backend into `dist/index.cjs`  
+- `npm run build` → runs both, so Vercel succeeds  
+
+Also ensure `vercel.json` points to the right outputs:
+
+```json
+{
+  "version": 2,
+  "builds": [
+    { "src": "server/index.ts", "use": "@vercel/node" },
+    { "src": "dist/public/**", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "server/index.ts" },
+    { "src": "/(.*)", "dest": "dist/public/$1" }
+  ]
+}
+```
+
+---
+
+### 🎯 Expected Outcome
+With these changes, Vercel will:
+- Run `npm run build` successfully.  
+- Serve the frontend from `dist/public`.  
+- Handle backend routes via `server/index.ts`.  
+
+---
+
+👉 You can paste this directly into Replit’s “Ask” or “Bug Report” so it knows what’s wrong and can auto‑update your code.  
+
+Do you want me to also draft a **ready‑to‑use `.vercelignore`** file so Replit doesn’t push junk files like `.local/` and `rd` to Vercel? That will make deployments cleaner.

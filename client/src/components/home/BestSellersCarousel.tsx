@@ -1,0 +1,108 @@
+import { motion, useAnimation } from "framer-motion";
+import { ChevronLeft, ChevronRight, ShoppingCart } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useState, useRef, useEffect } from "react";
+import best1 from "@assets/best_1.jpg";
+import best2 from "@assets/best_2.jpg";
+import best3 from "@assets/best_3.jpg";
+import best4 from "@assets/best_4.jpg";
+import best5 from "@assets/best_5.jpg";
+import best6 from "@assets/best_6.jpg";
+import best7 from "@assets/best_7.jpg";
+import best8 from "@assets/best_8.jpg";
+import best9 from "@assets/best_9.jpg";
+import best10 from "@assets/best_10.jpg";
+
+const bestSellers = [
+  { id: 1, name: "Premium Bomber", price: "₦45,000", image: best1 },
+  { id: 2, name: "Midnight Velvet", price: "₦65,000", image: best2 },
+  { id: 3, name: "Core Hoodie", price: "₦32,000", image: best3 },
+  { id: 4, name: "Classic Denim", price: "₦38,000", image: best4 },
+  { id: 5, name: "Urban Chinos", price: "₦28,000", image: best5 },
+  { id: 6, name: "Luxury Tee", price: "₦15,000", image: best6 },
+  { id: 7, name: "Gold Watch", price: "₦120,000", image: best7 },
+  { id: 8, name: "Street Cargo", price: "₦34,000", image: best8 },
+  { id: 9, name: "Evening Gown", price: "₦85,000", image: best9 },
+  { id: 10, name: "Silk Scarf", price: "₦12,000", image: best10 },
+];
+
+export function BestSellersCarousel() {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    if (isHovered) return;
+    
+    const interval = setInterval(() => {
+      if (scrollRef.current) {
+        const { scrollLeft, clientWidth, scrollWidth } = scrollRef.current;
+        let scrollTo = scrollLeft + 300;
+        
+        if (scrollLeft + clientWidth >= scrollWidth - 10) {
+          scrollTo = 0;
+        }
+        
+        scrollRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
+      }
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [isHovered]);
+
+  const scroll = (direction: "left" | "right") => {
+    if (scrollRef.current) {
+      const { scrollLeft, clientWidth } = scrollRef.current;
+      const scrollTo = direction === "left" ? scrollLeft - clientWidth : scrollLeft + clientWidth;
+      scrollRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
+    }
+  };
+
+  return (
+    <section className="py-20 md:py-24 bg-[#1a1025] px-6 md:px-8 lg:px-12 relative overflow-hidden">
+      <div className="container mx-auto">
+        <div className="flex items-end justify-between mb-12">
+          <div>
+            <h2 className="text-sm uppercase tracking-[0.3em] text-purple-400 font-bold mb-4">Top Rated</h2>
+            <h3 className="text-3xl md:text-5xl font-heading font-bold text-white">Best Sellers</h3>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" size="icon" onClick={() => scroll("left")} className="rounded-full border-white/10 hover:bg-white/5">
+              <ChevronLeft size={20} />
+            </Button>
+            <Button variant="outline" size="icon" onClick={() => scroll("right")} className="rounded-full border-white/10 hover:bg-white/5">
+              <ChevronRight size={20} />
+            </Button>
+          </div>
+        </div>
+
+        <div 
+          ref={scrollRef}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          className="flex gap-6 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-8"
+        >
+          {bestSellers.map((item) => (
+            <motion.div 
+              key={item.id}
+              className="min-w-[280px] md:min-w-[350px] snap-start group"
+            >
+              <div className="aspect-[4/5] rounded-2xl overflow-hidden relative mb-6 border border-white/5">
+                <img 
+                  src={item.image} 
+                  alt={item.name} 
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors" />
+                <Button className="absolute bottom-6 left-6 right-6 bg-white text-black hover:bg-purple-100 font-bold translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all">
+                  <ShoppingCart size={16} className="mr-2" /> Add to Cart
+                </Button>
+              </div>
+              <h4 className="text-xl font-bold mb-1">{item.name}</h4>
+              <p className="text-purple-400 font-medium">{item.price}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
