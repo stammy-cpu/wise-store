@@ -30,7 +30,7 @@ export function Hero() {
           </h2>
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-extrabold leading-[0.95] mb-8 capitalize tracking-tight">
             <span className="text-white">Keep it</span> <br/>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-300">short <span className="text-white">and</span> cool</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-purple-400 to-blue-300">short <span className="text-white">and</span> cool</span>
           </h1>
           <p className="text-sm md:text-base text-gray-300 mb-12 max-w-sm leading-relaxed font-normal">
             Elevate your wardrobe with our premium collection. <br/>
