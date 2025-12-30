@@ -33,12 +33,12 @@ export function Hero() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 h-full w-full flex flex-col justify-center items-start pt-20 px-4 md:px-6">
+      <div className="relative z-10 h-full w-full flex flex-col justify-center items-center md:items-start pt-20 px-4 md:px-6">
         <motion.div 
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="max-w-4xl text-white"
+          className="max-w-4xl text-white text-center md:text-left"
         >
           <h2 className="text-xs md:text-sm font-bold tracking-[0.4em] uppercase mb-6 text-white/90">
             Est. 2020 • Ile-Ife & Lagos
@@ -47,12 +47,12 @@ export function Hero() {
             <span className="text-white">Keep it</span> <br/>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-purple-400 to-blue-300">short <span className="text-white">and</span> cool</span>
           </h1>
-          <p className="text-sm md:text-base text-gray-300 mb-12 max-w-sm leading-relaxed font-normal">
+          <p className="text-sm md:text-base text-gray-300 mb-12 max-w-sm mx-auto md:mx-0 leading-relaxed font-normal">
             Elevate your wardrobe with our premium collection. <br/>
             Designed for those who lead, inspire, and stand out.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
             <Link href="/collections">
               <Button 
                 size="lg" 
