@@ -64,14 +64,20 @@ export function FeaturedCollections() {
               </div>
               <h3 className="text-lg md:text-xl font-heading font-bold mb-2">{collection.title}</h3>
               <p className="text-sm md:text-base text-purple-200 mb-4">{collection.description}</p>
-              <Link href={collection.link} onClick={() => {
-                const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-                localStorage.setItem('cart', JSON.stringify([...cart, { ...collection, name: collection.title, price: '₦0' }]));
-                window.dispatchEvent(new Event('storage'));
-                alert(`${collection.title} added to cart!`);
-              }} className="inline-block text-sm uppercase tracking-widest font-bold border-b border-white pb-1 hover:text-purple-300 hover:border-purple-300 transition-all">
+              <Button 
+                variant="link"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                  localStorage.setItem('cart', JSON.stringify([...cart, { ...collection, name: collection.title, price: '₦0' }]));
+                  window.dispatchEvent(new Event('storage'));
+                  alert(`${collection.title} added to cart!`);
+                }} 
+                className="inline-block h-auto p-0 text-sm uppercase tracking-widest font-bold border-b border-white rounded-none pb-1 hover:text-purple-300 hover:border-purple-300 transition-all text-white no-underline hover:no-underline"
+              >
                   Shop Now
-              </Link>
+              </Button>
             </motion.div>
           ))}
         </div>

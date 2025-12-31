@@ -94,13 +94,15 @@ export function BestSellersCarousel() {
                 />
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors" />
                 <Button 
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
                     localStorage.setItem('cart', JSON.stringify([...cart, item]));
                     window.dispatchEvent(new Event('storage'));
                     alert(`${item.name} added to cart!`);
                   }}
-                  className="absolute bottom-6 left-6 right-6 bg-white text-black hover:bg-purple-100 font-bold translate-y-0 opacity-100 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 transition-all"
+                  className="absolute bottom-6 left-6 right-6 bg-white text-black hover:bg-purple-100 font-bold translate-y-0 opacity-100 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 transition-all z-20"
                 >
                   <ShoppingCart size={16} className="mr-2" /> Add to Cart
                 </Button>
