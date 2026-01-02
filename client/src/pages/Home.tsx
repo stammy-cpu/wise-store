@@ -130,7 +130,7 @@ export default function Home() {
             <h2 className="text-3xl md:text-4xl font-heading font-bold text-center mb-12 md:mb-16">What Our Clients Say</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
               {[
-                { name: "Sarah J.", text: "The quality is unmatched. I wore the velvet dress to a gala and received compliments all night.", loc: "Lagos" },
+                { name: "Sarah J.", text: "Omo, the quality follow! I wear the velvet dress go gala and people no gree let me rest with compliments.", loc: "Lagos" },
                 { name: "Michael T.", text: "Finally, a brand that understands modern African street style. Bigwise is the future.", loc: "Ile-Ife" },
                 { name: "Amara K.", text: "Fast delivery and the packaging was so premium. Felt like opening a gift to myself.", loc: "Abuja" }
               ].map((t, i) => (

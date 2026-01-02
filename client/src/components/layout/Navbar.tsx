@@ -8,6 +8,18 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [location] = useLocation();
+  const [cartCount, setCartCount] = useState(0);
+
+  useEffect(() => {
+    const updateCartCount = () => {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      setCartCount(cart.length);
+    };
+    
+    updateCartCount();
+    window.addEventListener("storage", updateCartCount);
+    return () => window.removeEventListener("storage", updateCartCount);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -76,7 +88,11 @@ export function Navbar() {
             <div className="relative">
               <Link href="/cart">
                 <ShoppingBag className="w-5 h-5 cursor-pointer text-white/90 hover:text-purple-300 transition-colors" />
-                <span className="absolute -top-2 -right-2 bg-purple-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">2</span>
+                {cartCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-purple-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center animate-in zoom-in duration-300">
+                    {cartCount}
+                  </span>
+                )}
               </Link>
             </div>
           </div>
@@ -103,7 +119,7 @@ export function Navbar() {
               ))}
               <div className="flex gap-6 mt-4 pt-6 border-t border-white/10 w-full justify-center">
                  <Link href="/auth">Login</Link>
-                 <Link href="/cart">Cart (2)</Link>
+                 <Link href="/cart">Cart ({cartCount})</Link>
               </div>
             </div>
           </div>
