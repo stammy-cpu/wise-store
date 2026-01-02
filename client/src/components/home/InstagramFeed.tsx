@@ -6,10 +6,10 @@ import instagramPost4 from "@assets/generated_images/fashion_model_close-up_port
 
 export function InstagramFeed() {
   const posts = [
-    { id: 1, image: instagramPost1, likes: 1240, comments: 89, caption: "New season, new vibes 💜" },
-    { id: 2, image: instagramPost2, likes: 2156, comments: 156, caption: "Street style essentials" },
-    { id: 3, image: instagramPost3, likes: 1890, comments: 120, caption: "Timeless pieces, endless possibilities" },
-    { id: 4, image: instagramPost4, likes: 2345, comments: 201, caption: "Bold. Wise. Beautiful." },
+    { id: 1, image: "https://i.pinimg.com/1200x/d2/3f/18/d23f1850719dcd2c9e2fcae2d147037d.jpg", likes: 1240, comments: 89, caption: "New season, new vibes 💜" },
+    { id: 2, image: "https://i.pinimg.com/1200x/c3/ff/37/c3ff37f23f8617de65cb2315b5ad14e6.jpg", likes: 2156, comments: 156, caption: "Street style essentials" },
+    { id: 3, image: "https://i.pinimg.com/1200x/9f/1a/94/9f1a940340d03a9932f4773ec06c252e.jpg", likes: 1890, comments: 120, caption: "Timeless pieces, endless possibilities" },
+    { id: 4, image: "https://i.pinimg.com/1200x/b3/ac/e1/b3ace1065defbe98f937ca4160db9c1d.jpg", likes: 2345, comments: 201, caption: "Bold. Wise. Beautiful." },
   ];
 
   return (
