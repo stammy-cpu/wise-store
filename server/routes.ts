@@ -18,6 +18,16 @@ export async function registerRoutes(
     }
   });
 
+  app.post("/api/login", async (req, res) => {
+    const { username, password } = req.body;
+    const user = await storage.getUserByUsername(username);
+    if (user && user.password === password) {
+      res.json({ id: user.id, username: user.username, isAdmin: user.isAdmin });
+    } else {
+      res.status(401).json({ error: "Invalid credentials" });
+    }
+  });
+
   app.get("/api/conversations", async (_req, res) => {
     try {
       const conversations = await storage.getAllConversations();
