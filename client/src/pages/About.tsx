@@ -32,7 +32,7 @@ export default function About() {
               className="relative mx-auto w-full max-w-[450px]"
             >
               <div className="absolute -inset-4 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl opacity-20 blur-lg" />
-              <div className="relative z-10 aspect-[4/5] overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
+              <div className="relative z-10 aspect-[16/9] overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
                 <img 
                   src="https://i.pinimg.com/736x/06/1f/e9/061fe912f1974f95fcd86831260dbdf4.jpg" 
                   alt="Bigwise Inspiration" 
