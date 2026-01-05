@@ -14,16 +14,16 @@ import best9 from "@assets/best_9.jpg";
 import best10 from "@assets/best_10.jpg";
 
 const bestSellers = [
-  { id: 1, name: "Premium Bomber", price: "₦45,000", image: best1 },
-  { id: 2, name: "Midnight Velvet", price: "₦65,000", image: best2 },
-  { id: 3, name: "Core Hoodie", price: "₦32,000", image: best3 },
-  { id: 4, name: "Classic Denim", price: "₦38,000", image: best4 },
-  { id: 5, name: "Urban Chinos", price: "₦28,000", image: best5 },
-  { id: 6, name: "Luxury Tee", price: "₦15,000", image: best6 },
-  { id: 7, name: "Gold Watch", price: "₦120,000", image: best7 },
-  { id: 8, name: "Street Cargo", price: "₦34,000", image: best8 },
-  { id: 9, name: "Evening Gown", price: "₦85,000", image: best9 },
-  { id: 10, name: "Silk Scarf", price: "₦12,000", image: best10 },
+  { id: 1, name: "Street Cargo", price: "₦34,000", image: "https://i.pinimg.com/736x/69/af/14/69af14a75cf43e67e3a892aa48dadccc.jpg" },
+  { id: 2, name: "Bucket Hat", price: "₦12,000", image: "https://i.pinimg.com/736x/c4/84/a9/c484a94a27438cf10c3d076987f67d54.jpg" },
+  { id: 3, name: "Premium Jacket", price: "₦65,000", image: "https://i.pinimg.com/736x/77/2b/db/772bdb67cbf7c977bd66020f9aa36228.jpg" },
+  { id: 4, name: "Top", price: "₦25,000", image: "https://i.pinimg.com/736x/e9/6d/b7/e96db7813854e5c4e284281ec62fb447.jpg" },
+  { id: 5, name: "Head Warmer", price: "₦8,000", image: "https://i.pinimg.com/736x/dd/69/f4/dd69f464a0cb9b2b8a37ea568bf90443.jpg" },
+  { id: 6, name: "Tank Top", price: "₦15,000", image: "https://i.pinimg.com/736x/41/0e/73/410e737427270a5b51d741c6755e85d0.jpg" },
+  { id: 7, name: "Short", price: "₦22,000", image: "https://i.pinimg.com/736x/69/af/14/69af14a75cf43e67e3a892aa48dadccc.jpg" },
+  { id: 8, name: "Hoodie", price: "₦32,000", image: "https://i.pinimg.com/736x/0a/21/80/0a21808c859872850e8eefd2ff52e6e8.jpg" },
+  { id: 9, name: "Skirt", price: "₦28,000", image: "https://i.pinimg.com/736x/60/da/ec/60daec25c85953c8f4f8501ee1481f00.jpg" },
+  { id: 10, name: "Tank Singlet", price: "₦12,000", image: "https://i.pinimg.com/736x/0b/aa/8b/0baa8bf774f8adb40c6d19e1fd79d5ab.jpg" },
 ];
 
 export function BestSellersCarousel() {
