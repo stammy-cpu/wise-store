@@ -33,9 +33,11 @@ export function BigwiseStories() {
   }, []);
 
   useEffect(() => {
-    const timer = setInterval(nextStory, 5000);
+    const story = stories[currentIndex];
+    const duration = story.type === "video" ? 12000 : 5000;
+    const timer = setInterval(nextStory, duration);
     return () => clearInterval(timer);
-  }, [nextStory]);
+  }, [nextStory, currentIndex]);
 
   const getVisibleIndices = () => {
     const left = (currentIndex - 1 + stories.length) % stories.length;
