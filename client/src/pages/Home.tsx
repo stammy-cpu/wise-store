@@ -18,10 +18,10 @@ import trendingImg4 from "@assets/best_4.jpg";
 
 // Placeholder for Trending Items
 const trendingItems = [
-  { id: 1, name: "Urban Bomber", price: "₦35,000", image: trendingImg1 },
-  { id: 2, name: "Velvet Dress", price: "₦50,000", image: trendingImg2 },
-  { id: 3, name: "Street Hoodie", price: "₦27,000", image: trendingImg3 },
-  { id: 4, name: "Classic Tee", price: "₦14,500", image: trendingImg4 },
+  { id: 1, name: "Street Cargo", price: "₦34,000", image: "https://i.pinimg.com/736x/69/af/14/69af14a75cf43e67e3a892aa48dadccc.jpg" },
+  { id: 2, name: "Premium Jacket", price: "₦65,000", image: "https://i.pinimg.com/736x/77/2b/db/772bdb67cbf7c977bd66020f9aa36228.jpg" },
+  { id: 3, name: "Bucket Hat", price: "₦12,000", image: "https://i.pinimg.com/736x/c4/84/a9/c484a94a27438cf10c3d076987f67d54.jpg" },
+  { id: 4, name: "Hoodie", price: "₦32,000", image: "https://i.pinimg.com/736x/0a/21/80/0a21808c859872850e8eefd2ff52e6e8.jpg" },
 ];
 
 export default function Home() {
