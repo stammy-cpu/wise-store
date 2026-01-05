@@ -64,7 +64,7 @@ export default function About() {
 
           {/* Core Values */}
           <div className="relative py-16 md:py-20 border-t border-white/10">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-center mb-12 md:mb-16">Our Core Values</h2>
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-center mb-12 md:mb-16 uppercase tracking-widest">Our Core Principles</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
               <motion.div
@@ -72,12 +72,14 @@ export default function About() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
-                className="bg-white/5 border border-white/10 rounded-xl p-6 md:p-8 hover:border-purple-500/50 transition-colors"
+                className="bg-white/5 border border-white/10 rounded-xl p-6 md:p-10 hover:border-purple-500/50 transition-all hover-elevate"
               >
-                <Sparkles className="w-10 h-10 md:w-12 md:h-12 text-purple-400 mb-4" />
-                <h3 className="text-lg md:text-xl font-bold mb-2">Excellence</h3>
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  We pursue excellence in every detail. From fabric selection to final stitching, quality is non-negotiable.
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-purple-600/20 rounded-full flex items-center justify-center mb-6">
+                  <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-purple-400" />
+                </div>
+                <h3 className="text-xl md:text-2xl font-heading font-bold mb-4 uppercase tracking-tighter">Premium Craftsmanship</h3>
+                <p className="text-gray-400 text-sm md:text-base leading-relaxed">
+                  We don't just make clothes; we engineer statements. Every stitch is a commitment to quality, ensuring that BIGWISE pieces aren't just worn—they're experienced.
                 </p>
               </motion.div>
 
@@ -86,12 +88,14 @@ export default function About() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="bg-white/5 border border-white/10 rounded-xl p-6 md:p-8 hover:border-purple-500/50 transition-colors"
+                className="bg-white/5 border border-white/10 rounded-xl p-6 md:p-10 hover:border-purple-500/50 transition-all hover-elevate"
               >
-                <Zap className="w-10 h-10 md:w-12 md:h-12 text-purple-400 mb-4" />
-                <h3 className="text-lg md:text-xl font-bold mb-2">Innovation</h3>
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  We blend timeless design with modern aesthetics, creating pieces that feel fresh yet enduring.
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-purple-600/20 rounded-full flex items-center justify-center mb-6">
+                  <Zap className="w-6 h-6 md:w-8 md:h-8 text-purple-400" />
+                </div>
+                <h3 className="text-xl md:text-2xl font-heading font-bold mb-4 uppercase tracking-tighter">Bold Individuality</h3>
+                <p className="text-gray-400 text-sm md:text-base leading-relaxed">
+                  Fashion is your silent manifesto. We design for the unapologetic, the trendsetters, and the rebels who use their style to command the room without saying a word.
                 </p>
               </motion.div>
 
@@ -100,12 +104,14 @@ export default function About() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="bg-white/5 border border-white/10 rounded-xl p-6 md:p-8 hover:border-purple-500/50 transition-colors"
+                className="bg-white/5 border border-white/10 rounded-xl p-6 md:p-10 hover:border-purple-500/50 transition-all hover-elevate"
               >
-                <Heart className="w-10 h-10 md:w-12 md:h-12 text-purple-400 mb-4" />
-                <h3 className="text-lg md:text-xl font-bold mb-2">Community</h3>
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  We celebrate our customers. You're not just buyers—you're part of the Bigwise family.
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-purple-600/20 rounded-full flex items-center justify-center mb-6">
+                  <Heart className="w-6 h-6 md:w-8 md:h-8 text-purple-400" />
+                </div>
+                <h3 className="text-xl md:text-2xl font-heading font-bold mb-4 uppercase tracking-tighter">The BIGWISE Culture</h3>
+                <p className="text-gray-400 text-sm md:text-base leading-relaxed">
+                  From the streets of Lagos to the world, we are more than a brand. We are a community of creatives and visionaries who believe in the power of premium African fashion.
                 </p>
               </motion.div>
             </div>
