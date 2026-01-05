@@ -109,7 +109,7 @@ export function BigwiseStories() {
                     zIndex: isCenter ? 10 : 0
                   }}
                   transition={{ duration: 0.5 }}
-                  className={`relative flex-shrink-0 w-[280px] md:w-[400px] aspect-[9/16] rounded-2xl overflow-hidden border border-white/10 shadow-2xl ${!isCenter ? 'hidden md:block' : ''}`}
+                  className={`relative flex-shrink-0 w-[280px] md:w-[400px] aspect-[9/20] md:aspect-[9/16] rounded-2xl overflow-hidden border border-white/10 shadow-2xl ${!isCenter ? 'hidden md:block' : ''}`}
                 >
                   {story.type === "video" ? (
                     <video 

@@ -3,7 +3,7 @@
 ## Project Overview
 Premium fashion e-commerce website for BIGWISE, a fashion brand with locations in Ile-Ife & Lagos.
 
-**Current Status:** Complete with messaging feature
+**Current Status:** Complete with messaging feature and Admin Dashboard
 
 ## Design & Branding
 - **Theme:** Dark purple (#1a1025, #251b35) with premium aesthetic
@@ -20,6 +20,14 @@ Premium fashion e-commerce website for BIGWISE, a fashion brand with locations i
 - Wishlist
 - Contact page
 - **Live chat messaging** - Users can message BIGWISE support via floating chat button
+- **Admin Dashboard** - Premium control center for managing the store
+
+## Planned Features (Next Session)
+- **Product Management:** Admin ability to post items with size, color, type, category, sex, etc.
+- **Media Upload:** Support for both pictures and videos in product listings.
+- **Messaging Security:** Restrict chat to registered/logged-in users; Admin view for customer messages.
+- **Size Guide:** Implement a functional guidance page for user sizes.
+- **Gallery Update:** Mobile tiles increased in length (aspect-[9/20]).
 
 ## Project Structure
 - Frontend: React + Vite
@@ -36,4 +44,4 @@ Premium fashion e-commerce website for BIGWISE, a fashion brand with locations i
 - tanstack/react-query
 
 ---
-**Last Updated:** December 19, 2025 - Added messaging feature
+**Last Updated:** January 5, 2026 - Optimized mobile gallery and updated footer branding.

@@ -58,6 +58,9 @@ export function Footer() {
           <p className="text-xs text-gray-500">
             © {new Date().getFullYear()} Bigwise Clothings. All rights reserved.
           </p>
+          <p className="text-xs text-gray-500 font-bold tracking-widest uppercase">
+            Designed by STAMMY
+          </p>
         </div>
       </div>
     </footer>
