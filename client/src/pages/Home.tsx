@@ -6,6 +6,7 @@ import { FeaturedCollections } from "@/components/home/FeaturedCollections";
 import { BestSellersCarousel } from "@/components/home/BestSellersCarousel";
 import { SizeGuide } from "@/components/home/SizeGuide";
 import { Ambassadors } from "@/components/home/Ambassadors";
+import { BigwiseStories } from "@/components/home/BigwiseStories";
 import { InstagramFeed } from "@/components/home/InstagramFeed";
 import { MessageCircle, Star, ArrowRight, Mail, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -92,6 +93,9 @@ export default function Home() {
 
         {/* Ambassadors */}
         <Ambassadors />
+
+        {/* Stories Section */}
+        <BigwiseStories />
 
         {/* Become Our Model Section */}
         <section className="py-20 md:py-24 bg-gradient-to-r from-purple-900/30 to-blue-900/30 px-6 md:px-8 lg:px-12">
