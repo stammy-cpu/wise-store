@@ -22,8 +22,8 @@ export class MemStorage implements IStorage {
     // Seed admin user
     this.users.set("admin-id", {
       id: "admin-id",
-      username: "admin",
-      password: "password123",
+      username: "fatahstammy@gmail.com",
+      password: "@21Savage",
       isAdmin: true,
       visitorId: null
     });
