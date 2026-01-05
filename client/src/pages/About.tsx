@@ -2,7 +2,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { motion } from "framer-motion";
 import studioImage from "@assets/generated_images/fashion_design_studio_interior.png";
-import { Sparkles, Zap, Heart } from "lucide-react";
+import { Cpu, Brain, Heart } from "lucide-react";
 
 export default function About() {
   return (
@@ -75,7 +75,7 @@ export default function About() {
                 className="bg-white/5 border border-white/10 rounded-xl p-6 md:p-10 hover:border-purple-500/50 transition-all hover-elevate"
               >
                 <div className="w-12 h-12 md:w-16 md:h-16 bg-purple-600/20 rounded-full flex items-center justify-center mb-6">
-                  <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-purple-400" />
+                  <Cpu className="w-6 h-6 md:w-8 md:h-8 text-purple-400" />
                 </div>
                 <h3 className="text-xl md:text-2xl font-heading font-bold mb-4 uppercase tracking-tighter">Premium Craftsmanship</h3>
                 <p className="text-gray-400 text-sm md:text-base leading-relaxed">
@@ -91,7 +91,7 @@ export default function About() {
                 className="bg-white/5 border border-white/10 rounded-xl p-6 md:p-10 hover:border-purple-500/50 transition-all hover-elevate"
               >
                 <div className="w-12 h-12 md:w-16 md:h-16 bg-purple-600/20 rounded-full flex items-center justify-center mb-6">
-                  <Zap className="w-6 h-6 md:w-8 md:h-8 text-purple-400" />
+                  <Brain className="w-6 h-6 md:w-8 md:h-8 text-purple-400" />
                 </div>
                 <h3 className="text-xl md:text-2xl font-heading font-bold mb-4 uppercase tracking-tighter">Bold Individuality</h3>
                 <p className="text-gray-400 text-sm md:text-base leading-relaxed">
