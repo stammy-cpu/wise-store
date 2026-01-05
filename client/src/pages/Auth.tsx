@@ -3,9 +3,55 @@ import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Link } from "wouter";
+import { useState } from "react";
+import { useLocation } from "wouter";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 
 export default function Auth() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [, setLocation] = useState("");
+  const { toast } = useToast();
+
+  const handleLogin = async () => {
+    if (!username || !password) {
+      toast({
+        title: "Error",
+        description: "Please fill in all fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const res = await apiRequest("POST", "/api/login", { username, password });
+      const user = await res.json();
+      
+      localStorage.setItem("user", JSON.stringify(user));
+      toast({
+        title: "Success",
+        description: "Logged in successfully",
+      });
+      
+      if (user.isAdmin) {
+        window.location.href = "/chat"; // Use direct navigation for now to ensure redirect
+      } else {
+        window.location.href = "/";
+      }
+    } catch (error: any) {
+      toast({
+        title: "Login Failed",
+        description: error.message || "Invalid credentials",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-[#1a1025] text-white font-sans">
       <Navbar />
@@ -26,17 +72,33 @@ export default function Auth() {
               <TabsContent value="login" className="space-y-4">
                 <div className="space-y-2">
                   <label className="text-xs uppercase tracking-widest font-bold text-gray-400">Email</label>
-                  <Input type="email" placeholder="john@example.com" className="bg-black/20 border-white/10 text-white h-12" />
+                  <Input 
+                    type="email" 
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="john@example.com" 
+                    className="bg-black/20 border-white/10 text-white h-12" 
+                  />
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs uppercase tracking-widest font-bold text-gray-400">Password</label>
-                  <Input type="password" placeholder="••••••••" className="bg-black/20 border-white/10 text-white h-12" />
+                  <Input 
+                    type="password" 
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••" 
+                    className="bg-black/20 border-white/10 text-white h-12" 
+                  />
                 </div>
                 <div className="text-right">
                   <a href="#" className="text-xs text-purple-400 hover:text-purple-300">Forgot password?</a>
                 </div>
-                <Button className="w-full h-12 bg-white text-purple-950 hover:bg-gray-100 font-bold uppercase tracking-wider rounded-lg mt-4">
-                  Log In
+                <Button 
+                  onClick={handleLogin}
+                  disabled={isLoading}
+                  className="w-full h-12 bg-white text-purple-950 hover:bg-gray-100 font-bold uppercase tracking-wider rounded-lg mt-4"
+                >
+                  {isLoading ? "Logging in..." : "Log In"}
                 </Button>
               </TabsContent>
               

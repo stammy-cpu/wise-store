@@ -118,8 +118,8 @@ export function Navbar() {
                 </Link>
               ))}
               <div className="flex gap-6 mt-4 pt-6 border-t border-white/10 w-full justify-center">
-                 <Link href="/auth">Login</Link>
-                 <Link href="/cart">Cart ({cartCount})</Link>
+                 <Link href="/auth" onClick={() => setIsOpen(false)}>Login</Link>
+                 <Link href="/cart" onClick={() => setIsOpen(false)}>Cart ({cartCount})</Link>
               </div>
             </div>
           </div>

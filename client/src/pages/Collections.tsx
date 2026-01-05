@@ -54,7 +54,7 @@ export default function Collections() {
                 className="group cursor-pointer"
               >
                 <Link href={`/product/${product.id}`}>
-                  <a className="block">
+                  <div className="block">
                     <div className="relative aspect-[3/4] overflow-hidden bg-white/5 mb-4 rounded-lg border border-white/10 group-hover:border-purple-500/50 transition-all">
                       <img 
                         src={product.image} 
@@ -74,7 +74,7 @@ export default function Collections() {
                       </div>
                       <span className="text-sm md:text-base font-bold text-purple-300 flex-shrink-0">{product.price}</span>
                     </div>
-                  </a>
+                  </div>
                 </Link>
               </motion.div>
             ))}
