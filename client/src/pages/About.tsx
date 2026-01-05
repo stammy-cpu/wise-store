@@ -29,14 +29,16 @@ export default function About() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="relative"
+              className="relative mx-auto w-full max-w-[450px]"
             >
               <div className="absolute -inset-4 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl opacity-20 blur-lg" />
-              <img 
-                src={studioImage} 
-                alt="Bigwise Studio" 
-                className="w-full h-auto rounded-xl relative z-10 border border-white/10 shadow-2xl" 
-              />
+              <div className="relative z-10 aspect-[2/3] overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
+                <img 
+                  src="https://i.pinimg.com/736x/a7/9a/7a/a79a7a3fb993fa0ee749a9d39f2c0dc8.jpg" 
+                  alt="Bigwise Inspiration" 
+                  className="w-full h-full object-cover" 
+                />
+              </div>
             </motion.div>
             
             <motion.div
