@@ -13,6 +13,7 @@ import Cart from "@/pages/Cart";
 import Auth from "@/pages/Auth";
 import Wishlist from "@/pages/Wishlist";
 import Chat from "@/pages/Chat";
+import Admin from "@/pages/Admin";
 import { FloatingChatButton } from "@/components/FloatingChatButton";
 import { useLocation } from "wouter";
 
@@ -28,6 +29,7 @@ function Router() {
       <Route path="/auth" component={Auth} />
       <Route path="/wishlist" component={Wishlist} />
       <Route path="/chat" component={Chat} />
+      <Route path="/admin" component={Admin} />
       <Route component={NotFound} />
     </Switch>
   );

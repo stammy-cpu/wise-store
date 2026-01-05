@@ -37,7 +37,7 @@ export default function Auth() {
       });
       
       if (user.isAdmin) {
-        window.location.href = "/chat"; // Use direct navigation for now to ensure redirect
+        window.location.href = "/admin"; // Redirect to the new admin dashboard
       } else {
         window.location.href = "/";
       }
