@@ -4,17 +4,21 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const stories = [
-  { id: 1, type: "image", url: "https://i.pinimg.com/736x/06/1f/e9/061fe912f1974f95fcd86831260dbdf4.jpg" },
-  { id: 2, type: "image", url: "https://i.pinimg.com/736x/a7/9a/7a/a79a7a3fb993fa0ee749a9d39f2c0dc8.jpg" },
-  { id: 3, type: "image", url: "https://i.pinimg.com/736x/69/af/14/69af14a75cf43e67e3a892aa48dadccc.jpg" },
-  { id: 4, type: "image", url: "https://i.pinimg.com/736x/c4/84/a9/c484a94a27438cf10c3d076987f67d54.jpg" },
-  { id: 5, type: "image", url: "https://i.pinimg.com/736x/77/2b/db/772bdb67cbf7c977bd66020f9aa36228.jpg" },
-  { id: 6, type: "image", url: "https://i.pinimg.com/736x/e9/6d/b7/e96db7813854e5c4e284281ec62fb447.jpg" },
-  { id: 7, type: "image", url: "https://i.pinimg.com/736x/dd/69/f4/dd69f464a0cb9b2b8a37ea568bf90443.jpg" },
-  { id: 8, type: "image", url: "https://i.pinimg.com/736x/41/0e/73/410e737427270a5b51d741c6755e85d0.jpg" },
-  { id: 9, type: "image", url: "https://i.pinimg.com/736x/0a/21/80/0a21808c859872850e8eefd2ff52e6e8.jpg" },
-  { id: 10, type: "image", url: "https://i.pinimg.com/736x/60/da/ec/60daec25c85953c8f4f8501ee1481f00.jpg" },
-  { id: 11, type: "image", url: "https://i.pinimg.com/736x/0b/aa/8b/0baa8bf774f8adb40c6d19e1fd79d5ab.jpg" },
+  { id: 1, type: "video", url: "https://v1.pinimg.com/videos/iht/expMp4/d8/a7/01/d8a70142f6a3b8501237b91a37e327e1_720w.mp4" },
+  { id: 2, type: "image", url: "https://i.pinimg.com/736x/eb/3b/6d/eb3b6d50b93ec19122cabba0948d2a75.jpg" },
+  { id: 3, type: "video", url: "https://v1.pinimg.com/videos/iht/expMp4/3e/90/73/3e9073c0d09c79f9c8b8996b3582d2f1_540w.mp4" },
+  { id: 4, type: "image", url: "https://i.pinimg.com/736x/d1/d5/10/d1d510cff6447268bce3efbefc104d33.jpg" },
+  { id: 5, type: "image", url: "https://i.pinimg.com/736x/f4/2f/62/f42f62ce9e38d1c892640e8fc9e8c2fb.jpg" },
+  { id: 6, type: "video", url: "https://v1.pinimg.com/videos/iht/expMp4/44/45/35/444535a3b398e1fb9d7d1383f869392a_720w.mp4" },
+  { id: 7, type: "image", url: "https://i.pinimg.com/736x/25/0c/7a/250c7a9b44dfd6f1de34cdfa0f7c498d.jpg" },
+  { id: 8, type: "image", url: "https://i.pinimg.com/736x/eb/3f/2b/eb3f2be004e29df77f1f21b565c7b910.jpg" },
+  { id: 9, type: "video", url: "https://v1.pinimg.com/videos/iht/expMp4/a6/1f/d2/a61fd27f64e5bdc544436ef4bbcf83ff_720w.mp4" },
+  { id: 10, type: "image", url: "https://i.pinimg.com/736x/71/ce/d1/71ced16b2d3e1c69c2dadd07a61b5919.jpg" },
+  { id: 11, type: "image", url: "https://i.pinimg.com/736x/9a/da/5d/9ada5dd31c8b945852f272c8e6830fc0.jpg" },
+  { id: 12, type: "image", url: "https://i.pinimg.com/736x/af/65/1a/af651ac7c8940a18ca0f5920f003add7.jpg" },
+  { id: 13, type: "image", url: "https://i.pinimg.com/736x/76/f5/ad/76f5ad3d030e1723b5db2370439bf0cc.jpg" },
+  { id: 14, type: "image", url: "https://i.pinimg.com/736x/3f/b1/f2/3fb1f20ab66f1569b7891e5804e8327d.jpg" },
+  { id: 15, type: "image", url: "https://i.pinimg.com/736x/fd/70/3a/fd703a27960079bdb882340ab731c1d8.jpg" },
 ];
 
 export function BigwiseStories() {
@@ -47,7 +51,7 @@ export function BigwiseStories() {
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-center mb-12">
           <h2 className="text-sm uppercase tracking-[0.3em] text-purple-400 font-bold mb-4">Live Updates</h2>
-          <h3 className="text-3xl md:text-5xl font-heading font-bold text-white">Bigwise Stories</h3>
+          <h3 className="text-3xl md:text-5xl font-heading font-bold text-white">BIGWISE GALLERY</h3>
         </div>
 
         <div className="relative flex items-center justify-center gap-4 md:gap-8 h-[500px] md:h-[700px]">
@@ -66,9 +70,10 @@ export function BigwiseStories() {
           <div className="flex items-center justify-center gap-4 md:gap-12 w-full max-w-6xl">
             {visibleIndices.map((idx, i) => {
               const isCenter = i === 1;
+              const story = stories[idx];
               return (
                 <motion.div
-                  key={`${stories[idx].id}-${i}`}
+                  key={`${story.id}-${i}`}
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ 
                     opacity: isCenter ? 1 : 0.4, 
@@ -79,11 +84,22 @@ export function BigwiseStories() {
                   transition={{ duration: 0.5 }}
                   className={`relative flex-shrink-0 w-[250px] md:w-[400px] aspect-[9/16] rounded-2xl overflow-hidden border border-white/10 shadow-2xl ${!isCenter ? 'hidden md:block' : ''}`}
                 >
-                  <img 
-                    src={stories[idx].url} 
-                    alt="Story" 
-                    className="w-full h-full object-cover"
-                  />
+                  {story.type === "video" ? (
+                    <video 
+                      src={story.url} 
+                      className="w-full h-full object-cover"
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                    />
+                  ) : (
+                    <img 
+                      src={story.url} 
+                      alt="Story" 
+                      className="w-full h-full object-cover"
+                    />
+                  )}
                   {isCenter && (
                     <div className="absolute top-4 left-4 right-4 flex gap-1 z-20">
                       {stories.map((_, dotIdx) => (
