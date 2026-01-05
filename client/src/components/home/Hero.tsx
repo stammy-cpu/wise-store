@@ -53,20 +53,14 @@ export function Hero() {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-            <Button 
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-                localStorage.setItem('cart', JSON.stringify([...cart, { id: 'hero', name: 'Premium Collection Item', price: '₦0', image: '' }]));
-                window.dispatchEvent(new Event('storage'));
-                alert(`Added to cart!`);
-              }}
-              size="lg" 
-              className="bg-purple-600 hover:bg-purple-700 text-white rounded-full h-14 px-10 text-sm uppercase tracking-widest font-bold transition-all shadow-lg shadow-purple-600/30 hover:scale-105 z-20"
-            >
-              Shop Collection
-            </Button>
+            <Link href="/collections">
+              <Button 
+                size="lg" 
+                className="bg-purple-600 hover:bg-purple-700 text-white rounded-full h-14 px-10 text-sm uppercase tracking-widest font-bold transition-all shadow-lg shadow-purple-600/30 hover:scale-105 z-20 w-full sm:w-auto"
+              >
+                Shop Collection
+              </Button>
+            </Link>
             <Link href="/collections?category=new">
               <Button 
                 variant="outline" 
