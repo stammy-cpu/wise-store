@@ -34,7 +34,7 @@ export default function About() {
               <div className="absolute -inset-4 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl opacity-20 blur-lg" />
               <div className="relative z-10 aspect-[2/3] overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
                 <img 
-                  src="https://i.pinimg.com/736x/a7/9a/7a/a79a7a3fb993fa0ee749a9d39f2c0dc8.jpg" 
+                  src="https://i.pinimg.com/736x/06/1f/e9/061fe912f1974f95fcd86831260dbdf4.jpg" 
                   alt="Bigwise Inspiration" 
                   className="w-full h-full object-cover" 
                 />
