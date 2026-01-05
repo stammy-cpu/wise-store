@@ -23,6 +23,8 @@ const stories = [
 
 export function BigwiseStories() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   const nextStory = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % stories.length);
@@ -31,6 +33,24 @@ export function BigwiseStories() {
   const prevStory = useCallback(() => {
     setCurrentIndex((prev) => (prev - 1 + stories.length) % stories.length);
   }, []);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+    if (isLeftSwipe) nextStory();
+    if (isRightSwipe) prevStory();
+  };
 
   useEffect(() => {
     const story = stories[currentIndex];
@@ -56,7 +76,12 @@ export function BigwiseStories() {
           <h3 className="text-3xl md:text-5xl font-heading font-bold text-white">BIGWISE GALLERY</h3>
         </div>
 
-        <div className="relative flex items-center justify-center gap-4 md:gap-8 h-[500px] md:h-[700px]">
+        <div 
+          className="relative flex items-center justify-center gap-4 md:gap-8 h-[500px] md:h-[700px]"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
           <div className="absolute left-4 z-20">
             <Button variant="ghost" size="icon" onClick={prevStory} className="rounded-full bg-white/10 hover:bg-white/20 text-white h-12 w-12">
               <ChevronLeft size={32} />
@@ -84,7 +109,7 @@ export function BigwiseStories() {
                     zIndex: isCenter ? 10 : 0
                   }}
                   transition={{ duration: 0.5 }}
-                  className={`relative flex-shrink-0 w-[250px] md:w-[400px] aspect-[9/16] rounded-2xl overflow-hidden border border-white/10 shadow-2xl ${!isCenter ? 'hidden md:block' : ''}`}
+                  className={`relative flex-shrink-0 w-[280px] md:w-[400px] aspect-[9/16] rounded-2xl overflow-hidden border border-white/10 shadow-2xl ${!isCenter ? 'hidden md:block' : ''}`}
                 >
                   {story.type === "video" ? (
                     <video 

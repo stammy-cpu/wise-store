@@ -79,12 +79,12 @@ export function BestSellersCarousel() {
           ref={scrollRef}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          className="flex gap-6 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-8"
+          className="flex gap-4 md:gap-6 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-8 px-4 -mx-4 md:px-0 md:mx-0"
         >
           {bestSellers.map((item) => (
             <motion.div 
               key={item.id}
-              className="min-w-[280px] md:min-w-[350px] snap-start group"
+              className="min-w-[260px] md:min-w-[350px] snap-start group"
             >
               <div className="aspect-[4/5] rounded-2xl overflow-hidden relative mb-6 border border-white/5">
                 <img 

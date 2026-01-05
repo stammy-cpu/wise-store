@@ -29,7 +29,7 @@ export default function About() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="relative mx-auto w-full max-w-[450px]"
+              className="relative mx-auto w-full max-w-[320px] md:max-w-[450px]"
             >
               <div className="absolute -inset-4 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl opacity-20 blur-lg" />
               <div className="relative z-10 aspect-[16/9] overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
