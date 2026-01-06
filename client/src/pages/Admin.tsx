@@ -1,7 +1,7 @@
 import { AdminNavbar } from "@/components/layout/AdminNavbar";
 import { Footer } from "@/components/layout/Footer";
 import { useEffect, useState } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LayoutDashboard, ShoppingCart, Users, MessageSquare, Settings } from "lucide-react";
