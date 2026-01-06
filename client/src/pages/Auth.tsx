@@ -36,8 +36,10 @@ export default function Auth() {
         description: "Logged in successfully",
       });
       
+      localStorage.setItem("user", JSON.stringify(user));
+
       if (user.isAdmin) {
-        window.location.href = "/admin"; // Redirect to the new admin dashboard
+        window.location.href = "/admin";
       } else {
         window.location.href = "/";
       }

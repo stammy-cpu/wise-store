@@ -1,11 +1,26 @@
-import { Navbar } from "@/components/layout/Navbar";
+import { AdminNavbar } from "@/components/layout/AdminNavbar";
 import { Footer } from "@/components/layout/Footer";
+import { useEffect, useState } from "react";
+import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LayoutDashboard, ShoppingCart, Users, MessageSquare, Settings } from "lucide-react";
-import { Link } from "wouter";
 
 export default function Admin() {
+  const [location, setLocation] = useLocation();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+    if (!user || !user.isAdmin) {
+      setLocation("/auth");
+    } else {
+      setIsAdmin(true);
+    }
+  }, [setLocation]);
+
+  if (!isAdmin) return null;
+
   const stats = [
     { title: "Total Revenue", value: "₦4,250,000", icon: LayoutDashboard, color: "text-green-400" },
     { title: "Orders", value: "156", icon: ShoppingCart, color: "text-blue-400" },
@@ -15,17 +30,11 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#1a1025] text-white font-sans">
-      <Navbar />
+      <AdminNavbar />
       <main className="flex-grow pt-32 pb-20 px-4">
         <div className="container mx-auto">
           <div className="flex justify-between items-center mb-12">
             <h1 className="text-3xl md:text-5xl font-heading font-bold">Admin Dashboard</h1>
-            <Link href="/chat">
-              <div className="flex items-center gap-2 px-6 py-3 bg-purple-600 rounded-full cursor-pointer hover:bg-purple-700 transition-colors">
-                <MessageSquare size={20} />
-                <span className="font-bold uppercase tracking-widest text-sm">Customer Chat</span>
-              </div>
-            </Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
@@ -45,7 +54,7 @@ export default function Admin() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <Card className="bg-white/5 border-white/10 text-white">
+            <Card id="post-item" className="bg-white/5 border-white/10 text-white scroll-mt-24">
               <CardHeader>
                 <CardTitle className="font-heading">Post New Item</CardTitle>
               </CardHeader>
@@ -102,7 +111,7 @@ export default function Admin() {
               </CardContent>
             </Card>
 
-            <Card className="bg-white/5 border-white/10 text-white">
+            <Card id="orders" className="bg-white/5 border-white/10 text-white scroll-mt-24">
               <CardHeader>
                 <CardTitle className="font-heading">Recent Orders</CardTitle>
               </CardHeader>
