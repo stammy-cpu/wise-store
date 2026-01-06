@@ -12,9 +12,9 @@ export function AdminNavbar() {
 
   const navLinks = [
     { name: "HOME", href: "/admin" },
-    { name: "POST ITEM", href: "/admin#post-item" },
-    { name: "MESSAGES", href: "/admin#messages" },
-    { name: "ORDERS", href: "/admin#orders" },
+    { name: "POST ITEM", href: "/admin/post-item" },
+    { name: "MESSAGES", href: "/chat" },
+    { name: "ORDERS", href: "/admin/orders" },
   ];
 
   return (
