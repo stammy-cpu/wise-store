@@ -69,32 +69,32 @@ export function BigwiseStories() {
   const visibleIndices = getVisibleIndices();
 
   return (
-    <section className="py-20 bg-[#1a1025] overflow-hidden">
+    <section className="py-20 md:py-32 bg-[#1a1025] overflow-hidden">
       <div className="container mx-auto px-4">
-        <div className="flex flex-col items-center mb-12">
-          <h2 className="text-sm uppercase tracking-[0.3em] text-purple-400 font-bold mb-4">Live Updates</h2>
+        <div className="flex flex-col items-center mb-16 md:mb-24">
+          <h2 className="text-xs uppercase tracking-[0.3em] text-purple-400 font-bold mb-4">Live Updates</h2>
           <h3 className="text-3xl md:text-5xl font-heading font-bold text-white">BIGWISE GALLERY</h3>
         </div>
 
         <div 
-          className="relative flex items-center justify-center gap-4 md:gap-8 h-[500px] md:h-[700px]"
+          className="relative flex items-center justify-center gap-4 md:gap-8 h-[550px] md:h-[700px]"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          <div className="absolute left-4 z-20">
+          <div className="absolute left-4 z-20 hidden md:block">
             <Button variant="ghost" size="icon" onClick={prevStory} className="rounded-full bg-white/10 hover:bg-white/20 text-white h-12 w-12">
               <ChevronLeft size={32} />
             </Button>
           </div>
           
-          <div className="absolute right-4 z-20">
+          <div className="absolute right-4 z-20 hidden md:block">
             <Button variant="ghost" size="icon" onClick={nextStory} className="rounded-full bg-white/10 hover:bg-white/20 text-white h-12 w-12">
               <ChevronRight size={32} />
             </Button>
           </div>
 
-          <div className="flex items-center justify-center gap-4 md:gap-12 w-full max-w-6xl">
+          <div className="flex items-center justify-center w-full max-w-6xl relative">
             {visibleIndices.map((idx, i) => {
               const isCenter = i === 1;
               const story = stories[idx];
@@ -103,13 +103,14 @@ export function BigwiseStories() {
                   key={`${story.id}-${i}`}
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ 
-                    opacity: isCenter ? 1 : 0.4, 
+                    opacity: isCenter ? 1 : 0.6, 
                     scale: isCenter ? 1 : 0.85,
-                    filter: isCenter ? "blur(0px)" : "blur(8px)",
-                    zIndex: isCenter ? 10 : 0
+                    filter: isCenter ? "blur(0px)" : "blur(12px)",
+                    zIndex: isCenter ? 10 : 0,
+                    x: i === 0 ? "-20%" : i === 2 ? "20%" : 0
                   }}
-                  transition={{ duration: 0.5 }}
-                  className={`relative flex-shrink-0 w-[280px] md:w-[400px] aspect-[9/20] md:aspect-[9/16] rounded-2xl overflow-hidden border border-white/10 shadow-2xl ${!isCenter ? 'hidden md:block' : ''}`}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  className={`absolute md:relative flex-shrink-0 w-[280px] md:w-[400px] aspect-[9/20] md:aspect-[9/16] rounded-2xl overflow-hidden border border-white/10 shadow-2xl ${!isCenter ? 'opacity-60' : 'z-10'}`}
                 >
                   {story.type === "video" ? (
                     <video 
