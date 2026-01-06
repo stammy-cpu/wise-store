@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertMessageSchema } from "@shared/schema";
+import { insertMessageSchema, insertProductSchema } from "@shared/schema";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -43,10 +43,39 @@ export async function registerRoutes(
       if (!parsed.success) {
         return res.status(400).json({ error: "Invalid message data" });
       }
+      
+      // If not from admin, verify if they are logged in or if we allow anonymous
+      // User requested: "only registered and logged in regular users are able to send messages"
+      if (!parsed.data.isFromAdmin && !parsed.data.userId) {
+        return res.status(401).json({ error: "Authentication required to send messages" });
+      }
+
       const message = await storage.createMessage(parsed.data);
       res.status(201).json(message);
     } catch (error) {
       res.status(500).json({ error: "Failed to send message" });
+    }
+  });
+
+  app.get("/api/products", async (_req, res) => {
+    try {
+      const products = await storage.getProducts();
+      res.json(products);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch products" });
+    }
+  });
+
+  app.post("/api/products", async (req, res) => {
+    try {
+      const parsed = insertProductSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ error: "Invalid product data" });
+      }
+      const product = await storage.createProduct(parsed.data);
+      res.status(201).json(product);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create product" });
     }
   });
 

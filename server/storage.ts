@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type Message, type InsertMessage } from "@shared/schema";
+import { type User, type InsertUser, type Message, type InsertMessage, type Product, type InsertProduct } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -10,15 +10,20 @@ export interface IStorage {
   getAllConversations(): Promise<{ visitorId: string; lastMessage: Message; unreadCount: number }[]>;
   createMessage(message: InsertMessage): Promise<Message>;
   markMessagesAsRead(visitorId: string): Promise<void>;
+
+  getProducts(): Promise<Product[]>;
+  createProduct(product: InsertProduct): Promise<Product>;
 }
 
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
   private messages: Map<string, Message>;
+  private products: Map<string, Product>;
 
   constructor() {
     this.users = new Map();
     this.messages = new Map();
+    this.products = new Map();
     // Seed admin user
     this.users.set("admin-id", {
       id: "admin-id",
@@ -104,6 +109,7 @@ export class MemStorage implements IStorage {
       id,
       createdAt: new Date(),
       read: false,
+      userId: insertMessage.userId ?? null,
       isFromAdmin: insertMessage.isFromAdmin ?? false,
     };
     this.messages.set(id, message);
@@ -119,6 +125,27 @@ export class MemStorage implements IStorage {
         this.messages.set(id, { ...msg, read: true });
       }
     }
+  }
+
+  async getProducts(): Promise<Product[]> {
+    return Array.from(this.products.values());
+  }
+
+  async createProduct(insertProduct: InsertProduct): Promise<Product> {
+    const id = randomUUID();
+    const product: Product = { 
+      ...insertProduct, 
+      id, 
+      featured: insertProduct.featured ?? false,
+      videos: insertProduct.videos ?? null,
+      sizes: insertProduct.sizes ?? null,
+      colors: insertProduct.colors ?? null,
+      type: insertProduct.type ?? null,
+      category: insertProduct.category ?? null,
+      sex: insertProduct.sex ?? null
+    };
+    this.products.set(id, product);
+    return product;
   }
 }
 

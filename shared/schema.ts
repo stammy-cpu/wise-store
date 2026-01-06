@@ -19,8 +19,28 @@ export const insertUserSchema = createInsertSchema(users).pick({
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 
+export const products = pgTable("products", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  description: text("description").notNull(),
+  price: text("price").notNull(),
+  images: text("images").array().notNull(),
+  videos: text("videos").array(),
+  sizes: text("sizes").array(),
+  colors: text("colors").array(),
+  type: text("type"),
+  category: text("category"),
+  sex: text("sex"),
+  featured: boolean("featured").default(false),
+});
+
+export const insertProductSchema = createInsertSchema(products).omit({ id: true });
+export type InsertProduct = z.infer<typeof insertProductSchema>;
+export type Product = typeof products.$inferSelect;
+
 export const messages = pgTable("messages", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: text("user_id"),
   visitorId: text("visitor_id").notNull(),
   content: text("content").notNull(),
   isFromAdmin: boolean("is_from_admin").default(false),
@@ -29,6 +49,7 @@ export const messages = pgTable("messages", {
 });
 
 export const insertMessageSchema = createInsertSchema(messages).pick({
+  userId: true,
   visitorId: true,
   content: true,
   isFromAdmin: true,
