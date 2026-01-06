@@ -75,31 +75,47 @@ export default function SizeGuide() {
               </Card>
             ))}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
-              <div className="space-y-6">
-                <h3 className="font-heading text-2xl font-bold">How to Measure</h3>
-                <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+              <div className="space-y-8">
+                <h3 className="font-heading text-2xl font-bold border-l-4 border-purple-600 pl-4 text-white">How to Measure</h3>
+                <div className="space-y-6">
                   {[
-                    { title: "Chest", desc: "Measure around the fullest part of your chest, keeping the tape horizontal." },
-                    { title: "Waist", desc: "Measure around the narrowest part (typically where your body bends side to side)." },
-                    { title: "Hips", desc: "Measure around the fullest part of your hips, keeping the tape horizontal." }
+                    { title: "Chest", desc: "Wrap the tape measure around the fullest part of your chest. Make sure the tape is level all the way around and not too tight." },
+                    { title: "Waist", desc: "Measure around your natural waistline, which is the narrowest part of your torso. For a more comfortable fit, keep one finger between the tape and your body." },
+                    { title: "Hips", desc: "Stand with your heels together and measure around the fullest part of your hips. This is usually about 8 inches below your waist." },
+                    { title: "Sleeve Length", desc: "With your arm slightly bent, measure from the center back of your neck, across your shoulder, and down to your wrist." },
+                    { title: "Inseam", desc: "Measure from the crotch point down to the ankle. This is best done with a pair of pants that fit you well." }
                   ].map((item) => (
-                    <div key={item.title} className="flex gap-4">
-                      <div className="mt-1"><CheckCircle size={18} className="text-purple-500" /></div>
+                    <div key={item.title} className="flex gap-4 group">
+                      <div className="mt-1 transition-transform group-hover:scale-110"><CheckCircle size={20} className="text-purple-500" /></div>
                       <div>
-                        <p className="font-bold text-sm uppercase tracking-widest mb-1">{item.title}</p>
-                        <p className="text-sm text-gray-400">{item.desc}</p>
+                        <p className="font-bold text-sm uppercase tracking-[0.2em] mb-2 text-white">{item.title}</p>
+                        <p className="text-sm text-gray-400 leading-relaxed">{item.desc}</p>
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
-              <div className="bg-purple-600/10 rounded-2xl p-8 border border-purple-500/20 flex flex-col justify-center items-center text-center">
-                <p className="text-lg font-heading font-bold mb-4">Still Not Sure?</p>
-                <p className="text-sm text-gray-400 mb-6">Our support team is here to help you find the right size for your body type.</p>
-                <button className="px-8 py-3 bg-purple-600 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-purple-700 transition-colors">
-                  Contact Support
-                </button>
+
+              <div className="space-y-8">
+                <h3 className="font-heading text-2xl font-bold border-l-4 border-purple-600 pl-4 text-white">Pro Tips for Fitting</h3>
+                <div className="bg-white/5 rounded-2xl p-8 border border-white/10 space-y-6">
+                  <div className="space-y-2">
+                    <p className="text-sm font-bold text-purple-400 uppercase tracking-widest">Between Sizes?</p>
+                    <p className="text-sm text-gray-300">If your measurements are between two sizes, we recommend choosing the larger size for a more relaxed streetwear fit, or the smaller size for a tighter, more tailored look.</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm font-bold text-purple-400 uppercase tracking-widest">Fabric Considerations</p>
+                    <p className="text-sm text-gray-300">Keep in mind that some materials like denim may feel stiffer initially and stretch slightly with wear, while our premium cotton blends offer more natural flexibility.</p>
+                  </div>
+                  <div className="pt-4 flex flex-col items-center text-center border-t border-white/10">
+                    <p className="text-lg font-heading font-bold mb-4 text-white">Need Personalized Help?</p>
+                    <p className="text-sm text-gray-400 mb-6">Our support team can provide specific recommendations based on your height and weight.</p>
+                    <button className="w-full py-4 bg-purple-600 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-purple-700 transition-all hover-elevate">
+                      Chat with a Stylist
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

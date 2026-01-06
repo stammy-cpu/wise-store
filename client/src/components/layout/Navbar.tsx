@@ -32,7 +32,6 @@ export function Navbar() {
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "Collections", href: "/collections" },
-    { name: "Size Guide", href: "/size-guide" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
   ];
