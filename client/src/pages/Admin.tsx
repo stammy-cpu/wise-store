@@ -133,27 +133,20 @@ export default function Admin() {
               </CardContent>
             </Card>
 
-            <Card className="bg-white/5 border-white/10 text-white">
+            <Card id="messages" className="bg-white/5 border-white/10 text-white scroll-mt-24">
               <CardHeader>
-                <CardTitle className="font-heading">Quick Actions</CardTitle>
+                <CardTitle className="font-heading">Recent Messages</CardTitle>
               </CardHeader>
-              <CardContent className="grid grid-cols-2 gap-4">
-                <button className="flex flex-col items-center gap-3 p-6 rounded-xl bg-black/20 hover:bg-black/40 transition-colors">
-                  <ShoppingCart size={24} className="text-purple-400" />
-                  <span className="text-xs uppercase font-bold tracking-tighter">Manage Products</span>
-                </button>
-                <button className="flex flex-col items-center gap-3 p-6 rounded-xl bg-black/20 hover:bg-black/40 transition-colors">
-                  <Users size={24} className="text-blue-400" />
-                  <span className="text-xs uppercase font-bold tracking-tighter">View Customers</span>
-                </button>
-                <button className="flex flex-col items-center gap-3 p-6 rounded-xl bg-black/20 hover:bg-black/40 transition-colors">
-                  <Settings size={24} className="text-gray-400" />
-                  <span className="text-xs uppercase font-bold tracking-tighter">Store Settings</span>
-                </button>
-                <button className="flex flex-col items-center gap-3 p-6 rounded-xl bg-black/20 hover:bg-black/40 transition-colors">
-                  <LayoutDashboard size={24} className="text-green-400" />
-                  <span className="text-xs uppercase font-bold tracking-tighter">Sales Reports</span>
-                </button>
+              <CardContent>
+                <div className="space-y-4">
+                  <p className="text-sm text-gray-400">Manage your customer conversations.</p>
+                  <Link href="/chat">
+                    <button className="w-full py-3 bg-purple-600/20 border border-purple-500/30 rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-purple-600/40 transition-all flex items-center justify-center gap-2">
+                      <MessageSquare size={16} />
+                      Open Chat Center
+                    </button>
+                  </Link>
+                </div>
               </CardContent>
             </Card>
           </div>
