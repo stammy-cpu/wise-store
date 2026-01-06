@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Ruler, CheckCircle2 } from "lucide-react";
+import { Link } from "wouter";
 
 export function SizeGuide() {
   return (
@@ -30,9 +31,11 @@ export function SizeGuide() {
                 ))}
               </div>
               
-              <button className="px-8 py-4 bg-purple-600 hover:bg-purple-500 text-white rounded-full font-bold transition-all hover:scale-105 active:scale-95">
-                View Size Chart
-              </button>
+              <Link href="/size-guide">
+                <button className="px-8 py-4 bg-purple-600 hover:bg-purple-500 text-white rounded-full font-bold transition-all hover:scale-105 active:scale-95">
+                  View Size Chart
+                </button>
+              </Link>
             </div>
             
             <div className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 p-6 md:p-8">
