@@ -11,12 +11,15 @@ export default function Admin() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user") || "null");
-    if (!user || !user.isAdmin) {
-      setLocation("/auth");
-    } else {
-      setIsAdmin(true);
-    }
+    const checkAuth = () => {
+      const user = JSON.parse(localStorage.getItem("user") || "null");
+      if (!user || !user.isAdmin) {
+        setLocation("/auth");
+      } else {
+        setIsAdmin(true);
+      }
+    };
+    checkAuth();
   }, [setLocation]);
 
   if (!isAdmin) return null;

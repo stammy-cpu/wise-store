@@ -22,16 +22,16 @@ export function AdminNavbar() {
       <div className="container mx-auto px-6 flex items-center justify-between">
         <div className="flex gap-8">
           {navLinks.map((link) => (
-            <Link 
+            <a 
               key={link.name} 
               href={link.href}
               className={cn(
                 "text-xs uppercase tracking-widest hover:text-purple-400 transition-colors font-bold",
-                location === link.href ? "text-purple-400" : "text-white/70"
+                location === link.href.split('#')[0] ? "text-purple-400" : "text-white/70"
               )}
             >
               {link.name}
-            </Link>
+            </a>
           ))}
         </div>
 
