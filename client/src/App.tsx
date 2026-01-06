@@ -14,6 +14,7 @@ import Auth from "@/pages/Auth";
 import Wishlist from "@/pages/Wishlist";
 import Chat from "@/pages/Chat";
 import Admin from "@/pages/Admin";
+import SizeGuide from "@/pages/SizeGuide";
 import { FloatingChatButton } from "@/components/FloatingChatButton";
 import { useLocation } from "wouter";
 
@@ -30,6 +31,7 @@ function Router() {
       <Route path="/wishlist" component={Wishlist} />
       <Route path="/chat" component={Chat} />
       <Route path="/admin" component={Admin} />
+      <Route path="/size-guide" component={SizeGuide} />
       <Route component={NotFound} />
     </Switch>
   );
