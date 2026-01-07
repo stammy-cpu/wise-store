@@ -16,6 +16,7 @@ import Chat from "@/pages/Chat";
 import Admin from "@/pages/Admin";
 import PostItemPage from "@/pages/admin/PostItem";
 import OrdersPage from "@/pages/admin/Orders";
+import MessagesPage from "@/pages/admin/Messages";
 import SizeGuide from "@/pages/SizeGuide";
 import { FloatingChatButton } from "@/components/FloatingChatButton";
 import { useLocation } from "wouter";
@@ -35,6 +36,7 @@ function Router() {
       <Route path="/admin" component={Admin} />
       <Route path="/admin/post-item" component={PostItemPage} />
       <Route path="/admin/orders" component={OrdersPage} />
+      <Route path="/admin/messages" component={MessagesPage} />
       <Route path="/size-guide" component={SizeGuide} />
       <Route component={NotFound} />
     </Switch>

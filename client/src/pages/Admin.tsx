@@ -13,18 +13,19 @@ export default function Admin() {
   useEffect(() => {
     const checkAuth = () => {
       const user = JSON.parse(localStorage.getItem("user") || "null");
-      console.log("Checking admin auth:", user);
-      if (!user || !user.isAdmin) {
+      const expiry = localStorage.getItem("auth_expiry");
+      
+      if (!user || !user.isAdmin || (expiry && Date.now() > parseInt(expiry))) {
+        if (expiry && Date.now() > parseInt(expiry)) {
+          localStorage.removeItem("user");
+          localStorage.removeItem("auth_expiry");
+        }
         setLocation("/auth");
       } else {
         setIsAdmin(true);
       }
     };
     checkAuth();
-    
-    // Periodically verify auth to prevent silent logout
-    const interval = setInterval(checkAuth, 5000);
-    return () => clearInterval(interval);
   }, [setLocation]);
 
   if (!isAdmin) return null;

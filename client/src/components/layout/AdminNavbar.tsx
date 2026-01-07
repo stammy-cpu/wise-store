@@ -7,13 +7,14 @@ export function AdminNavbar() {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("auth_expiry");
     window.location.href = "/auth";
   };
 
   const navLinks = [
     { name: "HOME", href: "/admin" },
     { name: "POST ITEM", href: "/admin/post-item" },
-    { name: "MESSAGES", href: "/chat" },
+    { name: "MESSAGES", href: "/admin/messages" },
     { name: "ORDERS", href: "/admin/orders" },
   ];
 
@@ -22,16 +23,16 @@ export function AdminNavbar() {
       <div className="container mx-auto px-6 flex items-center justify-between">
         <div className="flex gap-8">
           {navLinks.map((link) => (
-            <a 
-              key={link.name} 
-              href={link.href}
-              className={cn(
-                "text-xs uppercase tracking-widest hover:text-purple-400 transition-colors font-bold",
-                location === link.href.split('#')[0] ? "text-purple-400" : "text-white/70"
-              )}
-            >
-              {link.name}
-            </a>
+            <Link key={link.name} href={link.href}>
+              <a 
+                className={cn(
+                  "text-xs uppercase tracking-widest hover:text-purple-400 transition-colors font-bold",
+                  location === link.href ? "text-purple-400" : "text-white/70"
+                )}
+              >
+                {link.name}
+              </a>
+            </Link>
           ))}
         </div>
 
