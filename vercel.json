@@ -1,17 +1,24 @@
 {
   "version": 2,
   "buildCommand": "npx tsx script/build.ts",
-  "rootDirectory": "./",
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "server/index.ts"
+      "dest": "index.cjs"
     },
     {
       "src": "/(.*)",
-      "dest": "/client/index.html"
+      "dest": "/public/$1",
+      "continue": true
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/index.html"
     }
   ]
 }
