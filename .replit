@@ -44,3 +44,8 @@ outputType = "webview"
 [agent]
 mockupState = "FULLSTACK"
 expertMode = true
+
+[userenv]
+
+[userenv.shared]
+VERCEL_TOKEN = "Eh4iF6dBeV9DNcsiOMJhq3Kh"
