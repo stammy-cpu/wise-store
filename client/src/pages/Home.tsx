@@ -30,27 +30,8 @@ export default function Home() {
     <div className="min-h-screen flex flex-col bg-[#1a1025] text-white font-sans">
       <Navbar />
       <main className="flex-grow">
+        {/* Hero Section */}
         <Hero />
-
-        {/* Drop Countdown Section */}
-        <section className="py-20 bg-black text-white px-6">
-          <div className="container mx-auto max-w-4xl text-center">
-            <h2 className="text-3xl md:text-5xl font-heading font-bold mb-4 uppercase tracking-tighter">Next Drop: Midnight Velvet</h2>
-            <div className="flex justify-center gap-4 mb-8">
-              {[ { l: "Days", v: "02" }, { l: "Hrs", v: "14" }, { l: "Min", v: "45" }, { l: "Sec", v: "12" } ].map((t, i) => (
-                <div key={i} className="flex flex-col items-center">
-                  <span className="text-4xl md:text-6xl font-bold font-mono">{t.v}</span>
-                  <span className="text-[10px] uppercase tracking-widest text-gray-500">{t.l}</span>
-                </div>
-              ))}
-            </div>
-            <p className="text-gray-400 mb-8 max-w-xl mx-auto">Limited pieces. Exclusive craftsmanship. Join the waitlist to get early access 30 minutes before the public release.</p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <input type="email" placeholder="Your email address" className="w-full sm:w-80 bg-white/5 border border-white/10 rounded-full px-6 py-3 text-sm focus:border-purple-500 outline-none" />
-              <Button className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 rounded-full px-8 py-3 h-auto font-bold uppercase tracking-widest text-sm">Notify Me</Button>
-            </div>
-          </div>
-        </section>
 
         {/* Gender Tiles */}
         <GenderTiles />
