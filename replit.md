@@ -25,6 +25,8 @@ Premium fashion e-commerce website for BIGWISE, a fashion brand with locations i
 ## Planned Features (Next Session)
 - **Product Management:** Admin ability to post items with size, color, type, category, sex, etc.
 - **Media Upload:** Support for both pictures and videos in product listings.
+- **Drop Countdown:** Functional countdown on home page with waitlist notifications.
+- **Product Customization:** Support for "Made to Order" requests and personalization details.
 - **Messaging Security:** Restrict chat to registered/logged-in users; Admin view for customer messages.
 - **Size Guide:** Implement a functional guidance page for user sizes.
 - **Gallery Update:** Mobile tiles increased in length (aspect-[9/20]).

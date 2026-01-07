@@ -32,11 +32,38 @@ export const products = pgTable("products", {
   category: text("category"),
   sex: text("sex"),
   featured: boolean("featured").default(false),
+  isUpcoming: boolean("is_upcoming").default(false),
+  dropDate: timestamp("drop_date"),
+  allowCustomization: boolean("allow_customization").default(false),
+});
+
+export const productNotifications = pgTable("product_notifications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  productId: text("product_id").notNull(),
+  userId: text("user_id").notNull(),
+  email: text("email").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const customizations = pgTable("customizations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  productId: text("product_id").notNull(),
+  userId: text("user_id").notNull(),
+  details: text("details").notNull(),
+  status: text("status").default("pending"),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const insertProductSchema = createInsertSchema(products).omit({ id: true });
+export const insertProductNotificationSchema = createInsertSchema(productNotifications).omit({ id: true });
+export const insertCustomizationSchema = createInsertSchema(customizations).omit({ id: true });
+
 export type InsertProduct = z.infer<typeof insertProductSchema>;
 export type Product = typeof products.$inferSelect;
+export type ProductNotification = typeof productNotifications.$inferSelect;
+export type InsertProductNotification = z.infer<typeof insertProductNotificationSchema>;
+export type Customization = typeof customizations.$inferSelect;
+export type InsertCustomization = z.infer<typeof insertCustomizationSchema>;
 
 export const messages = pgTable("messages", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),

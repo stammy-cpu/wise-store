@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type Message, type InsertMessage, type Product, type InsertProduct } from "@shared/schema";
+import { type User, type InsertUser, type Message, type InsertMessage, type Product, type InsertProduct, type ProductNotification, type InsertProductNotification, type Customization, type InsertCustomization } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -12,18 +12,26 @@ export interface IStorage {
   markMessagesAsRead(visitorId: string): Promise<void>;
 
   getProducts(): Promise<Product[]>;
+  getProduct(id: string): Promise<Product | undefined>;
   createProduct(product: InsertProduct): Promise<Product>;
+
+  createNotification(notif: InsertProductNotification): Promise<ProductNotification>;
+  createCustomization(cust: InsertCustomization): Promise<Customization>;
 }
 
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
   private messages: Map<string, Message>;
   private products: Map<string, Product>;
+  private notifications: Map<string, ProductNotification>;
+  private customizations: Map<string, Customization>;
 
   constructor() {
     this.users = new Map();
     this.messages = new Map();
     this.products = new Map();
+    this.notifications = new Map();
+    this.customizations = new Map();
     // Seed admin user
     this.users.set("admin-id", {
       id: "admin-id",
@@ -131,12 +139,19 @@ export class MemStorage implements IStorage {
     return Array.from(this.products.values());
   }
 
+  async getProduct(id: string): Promise<Product | undefined> {
+    return this.products.get(id);
+  }
+
   async createProduct(insertProduct: InsertProduct): Promise<Product> {
     const id = randomUUID();
     const product: Product = { 
       ...insertProduct, 
       id, 
       featured: insertProduct.featured ?? false,
+      isUpcoming: insertProduct.isUpcoming ?? false,
+      dropDate: insertProduct.dropDate ?? null,
+      allowCustomization: insertProduct.allowCustomization ?? false,
       videos: insertProduct.videos ?? null,
       sizes: insertProduct.sizes ?? null,
       colors: insertProduct.colors ?? null,
@@ -146,6 +161,20 @@ export class MemStorage implements IStorage {
     };
     this.products.set(id, product);
     return product;
+  }
+
+  async createNotification(insertNotif: InsertProductNotification): Promise<ProductNotification> {
+    const id = randomUUID();
+    const notif: ProductNotification = { ...insertNotif, id, createdAt: new Date() };
+    this.notifications.set(id, notif);
+    return notif;
+  }
+
+  async createCustomization(insertCust: InsertCustomization): Promise<Customization> {
+    const id = randomUUID();
+    const cust: Customization = { ...insertCust, id, createdAt: new Date(), status: "pending" };
+    this.customizations.set(id, cust);
+    return cust;
   }
 }
 

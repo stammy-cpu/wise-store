@@ -29,6 +29,9 @@ export default function PostItemPage() {
       category: "Jackets",
       sex: "Unisex",
       featured: false,
+      isUpcoming: false,
+      dropDate: null,
+      allowCustomization: false,
     },
   });
 
@@ -240,6 +243,43 @@ export default function PostItemPage() {
                             />
                           </FormControl>
                           <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="isUpcoming"
+                      render={({ field }) => (
+                        <FormItem className="flex items-center gap-2 space-y-0">
+                          <FormControl>
+                            <input 
+                              type="checkbox" 
+                              checked={field.value || false} 
+                              onChange={field.onChange}
+                              className="w-4 h-4 rounded border-white/10 bg-black/40"
+                            />
+                          </FormControl>
+                          <FormLabel className="text-xs uppercase font-bold tracking-widest text-gray-400">Mark as Upcoming Drop</FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="allowCustomization"
+                      render={({ field }) => (
+                        <FormItem className="flex items-center gap-2 space-y-0">
+                          <FormControl>
+                            <input 
+                              type="checkbox" 
+                              checked={field.value || false} 
+                              onChange={field.onChange}
+                              className="w-4 h-4 rounded border-white/10 bg-black/40"
+                            />
+                          </FormControl>
+                          <FormLabel className="text-xs uppercase font-bold tracking-widest text-gray-400">Enable Customization</FormLabel>
                         </FormItem>
                       )}
                     />
