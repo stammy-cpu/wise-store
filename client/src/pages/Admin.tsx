@@ -61,13 +61,30 @@ export default function Admin() {
             ))}
           </div>
 
-          <div className="grid grid-cols-1 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             <Card className="bg-white/5 border-white/10 text-white">
               <CardHeader>
-                <CardTitle className="font-heading">Sales Analytics Overview</CardTitle>
+                <CardTitle className="font-heading">Sales Performance</CardTitle>
               </CardHeader>
-              <CardContent className="h-64 flex items-center justify-center text-gray-500">
-                <p>Detailed sales charts and analytics will appear here as data populates.</p>
+              <CardContent className="h-64 flex flex-col items-center justify-center text-center px-8">
+                <div className="w-16 h-16 rounded-full bg-purple-600/20 flex items-center justify-center mb-4">
+                  <LayoutDashboard className="text-purple-400" />
+                </div>
+                <h4 className="font-bold mb-2 uppercase tracking-widest text-xs">Revenue Analytics</h4>
+                <p className="text-gray-500 text-xs leading-relaxed">Detailed sales charts and trend analysis will be available here as your store processes more transactions.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/5 border-white/10 text-white">
+              <CardHeader>
+                <CardTitle className="font-heading">Visitor Activity</CardTitle>
+              </CardHeader>
+              <CardContent className="h-64 flex flex-col items-center justify-center text-center px-8">
+                <div className="w-16 h-16 rounded-full bg-blue-600/20 flex items-center justify-center mb-4">
+                  <Users className="text-blue-400" />
+                </div>
+                <h4 className="font-bold mb-2 uppercase tracking-widest text-xs">User Engagement</h4>
+                <p className="text-gray-500 text-xs leading-relaxed">Real-time visitor tracking and demographic data will populate here to help you understand your audience better.</p>
               </CardContent>
             </Card>
           </div>
