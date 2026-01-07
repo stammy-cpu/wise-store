@@ -43,12 +43,12 @@ export function Hero() {
           <h2 className="text-xs md:text-sm font-bold tracking-[0.4em] uppercase mb-6 text-white/90">
             Est. 2020 • Ile-Ife & Lagos
           </h2>
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-extrabold leading-[0.95] mb-8 capitalize tracking-tight">
-            <span className="text-white">Keep it</span> <br/>
+          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-heading font-extrabold leading-[1.1] md:leading-[0.95] mb-6 md:mb-8 capitalize tracking-tight">
+            <span className="text-white">Keep it</span> <br className="hidden sm:block"/>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-purple-400 to-blue-300">short <span className="text-white">and</span> cool</span>
           </h1>
-          <p className="text-sm md:text-base text-gray-300 mb-12 max-w-sm mx-auto md:mx-0 leading-relaxed font-normal">
-            Elevate your wardrobe with our premium collection. <br/>
+          <p className="text-sm md:text-base text-gray-300 mb-8 md:mb-12 max-w-sm mx-auto md:mx-0 leading-relaxed font-normal">
+            Elevate your wardrobe with our premium collection. <br className="hidden sm:block"/>
             Designed for those who lead, inspire, and stand out.
           </p>
           
