@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useLocation } from "wouter";
 import { AdminNavbar } from "@/components/layout/AdminNavbar";
 import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,6 +16,14 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 
 export default function PostItemPage() {
+  const [, setLocation] = useLocation();
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+    if (!user || !user.isAdmin) {
+      setLocation("/auth");
+    }
+  }, [setLocation]);
+
   const { toast } = useToast();
   const form = useForm<InsertProduct>({
     resolver: zodResolver(insertProductSchema),

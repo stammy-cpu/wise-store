@@ -11,21 +11,12 @@ export default function Admin() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    const checkAuth = () => {
-      const user = JSON.parse(localStorage.getItem("user") || "null");
-      const expiry = localStorage.getItem("auth_expiry");
-      
-      if (!user || !user.isAdmin || (expiry && Date.now() > parseInt(expiry))) {
-        if (expiry && Date.now() > parseInt(expiry)) {
-          localStorage.removeItem("user");
-          localStorage.removeItem("auth_expiry");
-        }
-        setLocation("/auth");
-      } else {
-        setIsAdmin(true);
-      }
-    };
-    checkAuth();
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+    if (!user || !user.isAdmin) {
+      setLocation("/auth");
+    } else {
+      setIsAdmin(true);
+    }
   }, [setLocation]);
 
   if (!isAdmin) return null;

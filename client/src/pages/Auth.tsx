@@ -31,8 +31,6 @@ export default function Auth() {
       const user = await res.json();
       
       localStorage.setItem("user", JSON.stringify(user));
-      // Set session cookie-like behavior with localStorage
-      localStorage.setItem("auth_expiry", (Date.now() + 24 * 60 * 60 * 1000).toString());
       
       toast({
         title: "Success",
@@ -40,9 +38,9 @@ export default function Auth() {
       });
 
       if (user.isAdmin) {
-        window.location.href = "/admin";
+        setLocation("/admin");
       } else {
-        window.location.href = "/";
+        setLocation("/");
       }
     } catch (error: any) {
       toast({

@@ -2,7 +2,18 @@ import { AdminNavbar } from "@/components/layout/AdminNavbar";
 import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+import { useEffect } from "react";
+import { useLocation } from "wouter";
+
 export default function OrdersPage() {
+  const [, setLocation] = useLocation();
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+    if (!user || !user.isAdmin) {
+      setLocation("/auth");
+    }
+  }, [setLocation]);
+
   return (
     <div className="min-h-screen flex flex-col bg-[#1a1025] text-white font-sans">
       <AdminNavbar />
