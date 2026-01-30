@@ -9,6 +9,10 @@ import { setupSocket } from "./socket";
 const app = express();
 const httpServer = createServer(app);
 
+// Trust proxy - required when behind Render's reverse proxy
+// This is critical for proper cookie handling and rate limiting
+app.set('trust proxy', 1);
+
 // Setup WebSocket
 setupSocket(httpServer);
 
