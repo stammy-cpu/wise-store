@@ -17,7 +17,7 @@ export const CONFIG = {
     name: 'wise.sid',
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
-    sameSite: 'lax' as const,
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' as const : 'lax' as const,
   },
 
   // Rate limiting
