@@ -1,12 +1,22 @@
 import session from 'express-session';
-import MemoryStore from 'memorystore';
+import connectPgSimple from 'connect-pg-simple';
+import pkg from 'pg';
+const { Pool } = pkg;
 import { CONFIG } from './config';
 
-const MemoryStoreSession = MemoryStore(session);
+const PgStore = connectPgSimple(session);
+
+// Create a separate pool for session storage
+const sessionPool = new Pool({
+  connectionString: CONFIG.database.url,
+  ssl: CONFIG.database.ssl ? { rejectUnauthorized: false } : false,
+});
 
 export const sessionMiddleware = session({
-  store: new MemoryStoreSession({
-    checkPeriod: 86400000, // Prune expired entries every 24h
+  store: new PgStore({
+    pool: sessionPool,
+    tableName: 'session', // Will create this table automatically
+    createTableIfMissing: true,
   }),
   secret: CONFIG.session.secret,
   resave: false,
