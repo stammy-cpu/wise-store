@@ -3,14 +3,19 @@
   "buildCommand": "npx tsx script/build.ts",
   "outputDirectory": "dist",
   "installCommand": "npm install",
+  "functions": {
+    "api/index.ts": {
+      "runtime": "vercel-php@0.7.2"
+    }
+  },
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "index.cjs"
+      "dest": "api/index.ts"
     },
     {
       "src": "/(.*)",
-      "dest": "/public/$1",
+      "dest": "/client/$1",
       "continue": true
     },
     {
@@ -18,7 +23,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/public/index.html"
+      "dest": "/client/index.html"
     }
   ]
 }
