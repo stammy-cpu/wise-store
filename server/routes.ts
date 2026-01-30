@@ -42,12 +42,19 @@ export async function registerRoutes(
     req.session.fullName = user.fullName;
     req.session.isAdmin = user.isAdmin || false;
 
-    // Return user data (excluding password)
-    res.json({
-      id: user.id,
-      username: user.username,
-      fullName: user.fullName,
-      isAdmin: user.isAdmin,
+    // Save session explicitly before sending response (important for cross-domain)
+    req.session.save((err) => {
+      if (err) {
+        return res.status(500).json({ error: "Session save failed" });
+      }
+
+      // Return user data (excluding password)
+      res.json({
+        id: user.id,
+        username: user.username,
+        fullName: user.fullName,
+        isAdmin: user.isAdmin,
+      });
     });
   });
 
@@ -74,12 +81,19 @@ export async function registerRoutes(
       req.session.fullName = user.fullName;
       req.session.isAdmin = user.isAdmin || false;
 
-      // Return user data (excluding password)
-      res.status(201).json({
-        id: user.id,
-        username: user.username,
-        fullName: user.fullName,
-        isAdmin: user.isAdmin,
+      // Save session explicitly before sending response (important for cross-domain)
+      req.session.save((err) => {
+        if (err) {
+          return res.status(500).json({ error: "Session save failed" });
+        }
+
+        // Return user data (excluding password)
+        res.status(201).json({
+          id: user.id,
+          username: user.username,
+          fullName: user.fullName,
+          isAdmin: user.isAdmin,
+        });
       });
     } catch (error) {
       res.status(500).json({ error: "Failed to create account" });
