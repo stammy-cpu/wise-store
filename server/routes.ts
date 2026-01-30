@@ -7,6 +7,7 @@ import { loginRateLimiter } from "./middleware/rateLimit";
 import { messageRateLimit } from "./middleware/messageRateLimit";
 import { verifyPassword } from "./utils/password";
 import { upload } from "./upload";
+import { uploadToStorage } from "./supabase";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -126,16 +127,35 @@ export async function registerRoutes(
 
   // ===== Upload Routes =====
 
-  // Upload images (admin only)
-  app.post("/api/upload", requireAdmin, upload.array('images', 10), (req, res) => {
+  // Upload images to Supabase Storage (admin only)
+  app.post("/api/upload", requireAdmin, upload.array('images', 10), async (req, res) => {
     try {
       if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
         return res.status(400).json({ error: "No files uploaded" });
       }
 
-      const fileUrls = req.files.map(file => `/uploads/${file.filename}`);
-      res.json({ urls: fileUrls });
+      // Upload each file to Supabase Storage
+      const uploadPromises = req.files.map(async (file) => {
+        const timestamp = Date.now();
+        const randomSuffix = Math.round(Math.random() * 1E9);
+        const filename = `${timestamp}-${randomSuffix}${file.originalname.substring(file.originalname.lastIndexOf('.'))}`;
+        const path = `products/${filename}`;
+
+        // Upload to Supabase Storage
+        const publicUrl = await uploadToStorage(
+          'product-images',
+          path,
+          file.buffer,
+          file.mimetype
+        );
+
+        return publicUrl;
+      });
+
+      const urls = await Promise.all(uploadPromises);
+      res.json({ urls });
     } catch (error: any) {
+      console.error('Upload error:', error);
       res.status(500).json({ error: error.message || "Failed to upload images" });
     }
   });
