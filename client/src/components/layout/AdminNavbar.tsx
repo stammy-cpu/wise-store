@@ -1,18 +1,15 @@
 import { Link, useLocation } from "wouter";
 import { LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useSession } from "@/hooks/useSession";
 
 export function AdminNavbar() {
   const [location] = useLocation();
-
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("auth_expiry");
-    window.location.href = "/auth";
-  };
+  const { user, logout } = useSession();
 
   const navLinks = [
     { name: "HOME", href: "/admin" },
+    { name: "PRODUCTS", href: "/admin/products" },
     { name: "POST ITEM", href: "/admin/post-item" },
     { name: "MESSAGES", href: "/admin/messages" },
     { name: "ORDERS", href: "/admin/orders" },
@@ -40,13 +37,20 @@ export function AdminNavbar() {
           BIGWISE ADMIN
         </div>
 
-        <button 
-          onClick={handleLogout}
-          className="flex items-center gap-2 text-xs uppercase tracking-widest font-bold text-red-400 hover:text-red-300 transition-colors"
-        >
-          <LogOut size={16} />
-          <span>LOGOUT</span>
-        </button>
+        <div className="flex items-center gap-4">
+          {user && (
+            <span className="text-xs text-white/50">
+              {user.username}
+            </span>
+          )}
+          <button
+            onClick={() => logout()}
+            className="flex items-center gap-2 text-xs uppercase tracking-widest font-bold text-red-400 hover:text-red-300 transition-colors"
+          >
+            <LogOut size={16} />
+            <span>LOGOUT</span>
+          </button>
+        </div>
       </div>
     </nav>
   );

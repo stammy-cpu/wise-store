@@ -10,12 +10,17 @@ import { BigwiseStories } from "@/components/home/BigwiseStories";
 import { InstagramFeed } from "@/components/home/InstagramFeed";
 import { MessageCircle, Star, ArrowRight, Mail, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
+import { useSession } from "@/hooks/useSession";
+import { useToast } from "@/hooks/use-toast";
 import trendingImg1 from "@assets/best_1.jpg";
 import trendingImg2 from "@assets/best_2.jpg";
 import trendingImg3 from "@assets/best_3.jpg";
 import trendingImg4 from "@assets/best_4.jpg";
+
+// Bigwise WhatsApp number for model applications
+const WHATSAPP_NUMBER = "+2349055376301";
 
 // Placeholder for Trending Items
 const trendingItems = [
@@ -26,6 +31,26 @@ const trendingItems = [
 ];
 
 export default function Home() {
+  const { user, isAuthenticated } = useSession();
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
+
+  const handleApplyAsModel = () => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Login Required",
+        description: "Please log in to apply as a model.",
+        variant: "destructive",
+      });
+      setLocation("/auth");
+    } else {
+      // Redirect to WhatsApp with pre-filled model application message
+      window.open(
+        `https://wa.me/${WHATSAPP_NUMBER}?text=Hi%20Bigwise%2C%20I%27d%20like%20to%20apply%20to%20become%20a%20model.%20Here%20are%20my%20details%3A`,
+        '_blank'
+      );
+    }
+  };
   return (
     <div className="min-h-screen flex flex-col bg-[#1a1025] text-white font-sans">
       <Navbar />
@@ -116,12 +141,17 @@ export default function Home() {
                   Love fashion? We're looking for passionate individuals to represent the Bigwise brand. Showcase your style and join our growing community of content creators and brand ambassadors.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button className="w-full sm:w-auto bg-white text-purple-950 hover:bg-gray-100 font-bold text-base md:text-lg px-8 py-3 rounded-full h-auto">
+                  <Button
+                    onClick={handleApplyAsModel}
+                    className="w-full sm:w-auto bg-white text-purple-950 hover:bg-gray-100 font-bold text-base md:text-lg px-8 py-3 rounded-full h-auto"
+                  >
                     Apply Here
                   </Button>
-                  <Button variant="outline" className="w-full sm:w-auto border-white/30 text-white hover:bg-white/10 font-bold text-base md:text-lg px-8 py-3 rounded-full h-auto">
-                    Learn More
-                  </Button>
+                  <Link href="/about">
+                    <Button variant="outline" className="w-full sm:w-auto border-white/30 text-white hover:bg-white/10 font-bold text-base md:text-lg px-8 py-3 rounded-full h-auto">
+                      Learn More
+                    </Button>
+                  </Link>
                 </div>
               </motion.div>
             </div>
@@ -182,9 +212,9 @@ export default function Home() {
       
       {/* Floating Buttons */}
       <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-4">
-        <a 
-          href="https://wa.me/1234567890" 
-          target="_blank" 
+        <a
+          href="https://wa.me/+2349055376301"
+          target="_blank"
           rel="noopener noreferrer"
           className="bg-[#25D366] text-white p-4 rounded-full shadow-lg hover:scale-110 transition-transform duration-300 flex items-center justify-center"
           aria-label="Chat on WhatsApp"

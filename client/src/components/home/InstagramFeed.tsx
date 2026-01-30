@@ -18,7 +18,9 @@ export function InstagramFeed() {
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Instagram size={20} className="text-purple-400" />
-            <span className="text-sm uppercase tracking-widest font-bold text-purple-300">@bigwise_clothings</span>
+            <a href="https://www.instagram.com/letstalkbigwise" target="_blank" rel="noopener noreferrer" className="text-sm uppercase tracking-widest font-bold text-purple-300 hover:text-purple-200 transition-colors">
+              @letstalkbigwise
+            </a>
           </div>
           <h2 className="text-3xl md:text-4xl font-heading font-bold">On The Feed</h2>
         </div>

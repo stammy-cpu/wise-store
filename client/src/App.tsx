@@ -14,7 +14,9 @@ import Auth from "@/pages/Auth";
 import Wishlist from "@/pages/Wishlist";
 import Chat from "@/pages/Chat";
 import Admin from "@/pages/Admin";
+import ProductsPage from "@/pages/admin/Products";
 import PostItemPage from "@/pages/admin/PostItem";
+import EditProductPage from "@/pages/admin/EditProduct";
 import OrdersPage from "@/pages/admin/Orders";
 import MessagesPage from "@/pages/admin/Messages";
 import SizeGuide from "@/pages/SizeGuide";
@@ -34,7 +36,9 @@ function Router() {
       <Route path="/wishlist" component={Wishlist} />
       <Route path="/chat" component={Chat} />
       <Route path="/admin" component={Admin} />
+      <Route path="/admin/products" component={ProductsPage} />
       <Route path="/admin/post-item" component={PostItemPage} />
+      <Route path="/admin/products/edit/:id" component={EditProductPage} />
       <Route path="/admin/orders" component={OrdersPage} />
       <Route path="/admin/messages" component={MessagesPage} />
       <Route path="/size-guide" component={SizeGuide} />

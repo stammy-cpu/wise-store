@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { AdminNavbar } from "@/components/layout/AdminNavbar";
 import { Footer } from "@/components/layout/Footer";
@@ -10,19 +10,32 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
+import { Loader2, X, Upload, ChevronDown } from "lucide-react";
+import { useSession } from "@/hooks/useSession";
+
+const AVAILABLE_SIZES = ["XS", "S", "M", "L", "XL", "XXL", "XXXL", "One Size"];
+const AVAILABLE_COLORS = [
+  "Black", "White", "Gray", "Beige", "Brown",
+  "Red", "Pink", "Orange", "Yellow",
+  "Green", "Blue", "Navy", "Purple", "Burgundy"
+];
 
 export default function PostItemPage() {
   const [, setLocation] = useLocation();
+  const { isAdmin, isLoading } = useSession();
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [isUploadingImages, setIsUploadingImages] = useState(false);
+
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user") || "null");
-    if (!user || !user.isAdmin) {
+    if (!isLoading && !isAdmin) {
       setLocation("/auth");
     }
-  }, [setLocation]);
+  }, [isAdmin, isLoading, setLocation]);
 
   const { toast } = useToast();
   const form = useForm<InsertProduct>({
@@ -39,6 +52,8 @@ export default function PostItemPage() {
       category: "Jackets",
       sex: "Unisex",
       featured: false,
+      bestSeller: false,
+      newArrival: false,
       isUpcoming: false,
       dropDate: null,
       allowCustomization: false,
@@ -53,6 +68,7 @@ export default function PostItemPage() {
     onSuccess: () => {
       toast({ title: "Success", description: "Product posted successfully" });
       form.reset();
+      setImagePreviews([]);
       queryClient.invalidateQueries({ queryKey: ["/api/products"] });
     },
     onError: (error: Error) => {
@@ -60,9 +76,57 @@ export default function PostItemPage() {
     },
   });
 
+  const handleImageUpload = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+
+    setIsUploadingImages(true);
+    try {
+      const formData = new FormData();
+      Array.from(files).forEach(file => {
+        formData.append('images', file);
+      });
+
+      const res = await apiRequest("POST", "/api/upload", formData);
+      const data = await res.json();
+
+      // Update form with uploaded image URLs
+      const currentImages = form.getValues('images') || [];
+      form.setValue('images', [...currentImages, ...data.urls]);
+
+      // Create preview URLs
+      const newPreviews = Array.from(files).map(file => URL.createObjectURL(file));
+      setImagePreviews(prev => [...prev, ...newPreviews]);
+
+      toast({ title: "Success", description: `${files.length} image(s) uploaded successfully` });
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message || "Failed to upload images", variant: "destructive" });
+    } finally {
+      setIsUploadingImages(false);
+    }
+  };
+
+  const removeImage = (index: number) => {
+    const currentImages = form.getValues('images') || [];
+    const newImages = currentImages.filter((_, i) => i !== index);
+    form.setValue('images', newImages);
+
+    const newPreviews = imagePreviews.filter((_, i) => i !== index);
+    setImagePreviews(newPreviews);
+  };
+
   const onSubmit = (data: InsertProduct) => {
     mutation.mutate(data);
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#1a1025] text-white">
+        <div className="text-xl">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!isAdmin) return null;
 
   return (
     <div className="min-h-screen flex flex-col bg-[#1a1025] text-white font-sans">
@@ -171,9 +235,28 @@ export default function PostItemPage() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-xs uppercase font-bold tracking-widest text-gray-400">Type</FormLabel>
-                          <FormControl>
-                            <Input {...field} value={field.value || ""} className="bg-black/40 border-white/10" placeholder="e.g. Hoodie" />
-                          </FormControl>
+                          <Select onValueChange={field.onChange} defaultValue={field.value || undefined}>
+                            <FormControl>
+                              <SelectTrigger className="bg-black/40 border-white/10">
+                                <SelectValue placeholder="Select Type" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Hoodie">Hoodie</SelectItem>
+                              <SelectItem value="T-Shirt">T-Shirt</SelectItem>
+                              <SelectItem value="Sweater">Sweater</SelectItem>
+                              <SelectItem value="Pants">Pants</SelectItem>
+                              <SelectItem value="Shorts">Shorts</SelectItem>
+                              <SelectItem value="Jacket">Jacket</SelectItem>
+                              <SelectItem value="Coat">Coat</SelectItem>
+                              <SelectItem value="Dress">Dress</SelectItem>
+                              <SelectItem value="Skirt">Skirt</SelectItem>
+                              <SelectItem value="Hat">Hat</SelectItem>
+                              <SelectItem value="Bag">Bag</SelectItem>
+                              <SelectItem value="Shoes">Shoes</SelectItem>
+                              <SelectItem value="Other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -186,15 +269,65 @@ export default function PostItemPage() {
                       name="sizes"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-xs uppercase font-bold tracking-widest text-gray-400">Sizes (Comma separated)</FormLabel>
-                          <FormControl>
-                            <Input 
-                              value={field.value?.join(", ") || ""} 
-                              onChange={(e) => field.onChange(e.target.value.split(",").map(s => s.trim()).filter(Boolean))}
-                              className="bg-black/40 border-white/10" 
-                              placeholder="S, M, L, XL" 
-                            />
-                          </FormControl>
+                          <FormLabel className="text-xs uppercase font-bold tracking-widest text-gray-400">
+                            Sizes
+                          </FormLabel>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <button
+                                  type="button"
+                                  className="w-full flex items-center justify-between px-3 py-2 bg-black/40 border border-white/10 rounded-md text-left hover:bg-black/60 transition-colors"
+                                >
+                                  <span className="text-sm">
+                                    {field.value && field.value.length > 0
+                                      ? `${field.value.length} size(s) selected`
+                                      : "Select sizes"}
+                                  </span>
+                                  <ChevronDown className="h-4 w-4 opacity-50" />
+                                </button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-full bg-[#1a1025] border-white/10 p-4">
+                              <div className="space-y-2">
+                                {AVAILABLE_SIZES.map((size) => (
+                                  <div key={size} className="flex items-center space-x-2">
+                                    <Checkbox
+                                      id={`size-${size}`}
+                                      checked={field.value?.includes(size)}
+                                      onCheckedChange={(checked) => {
+                                        const current = field.value || [];
+                                        if (checked) {
+                                          field.onChange([...current, size]);
+                                        } else {
+                                          field.onChange(current.filter((s) => s !== size));
+                                        }
+                                      }}
+                                      className="border-white/20"
+                                    />
+                                    <label
+                                      htmlFor={`size-${size}`}
+                                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                                    >
+                                      {size}
+                                    </label>
+                                  </div>
+                                ))}
+                              </div>
+                            </PopoverContent>
+                          </Popover>
+                          {field.value && field.value.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              {field.value.map((size) => (
+                                <span
+                                  key={size}
+                                  className="px-2 py-1 bg-purple-600/20 border border-purple-600/40 rounded text-xs"
+                                >
+                                  {size}
+                                </span>
+                              ))}
+                            </div>
+                          )}
                           <FormMessage />
                         </FormItem>
                       )}
@@ -204,53 +337,120 @@ export default function PostItemPage() {
                       name="colors"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-xs uppercase font-bold tracking-widest text-gray-400">Colors (Comma separated)</FormLabel>
-                          <FormControl>
-                            <Input 
-                              value={field.value?.join(", ") || ""} 
-                              onChange={(e) => field.onChange(e.target.value.split(",").map(s => s.trim()).filter(Boolean))}
-                              className="bg-black/40 border-white/10" 
-                              placeholder="Purple, Black, White" 
-                            />
-                          </FormControl>
+                          <FormLabel className="text-xs uppercase font-bold tracking-widest text-gray-400">
+                            Colors
+                          </FormLabel>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <button
+                                  type="button"
+                                  className="w-full flex items-center justify-between px-3 py-2 bg-black/40 border border-white/10 rounded-md text-left hover:bg-black/60 transition-colors"
+                                >
+                                  <span className="text-sm">
+                                    {field.value && field.value.length > 0
+                                      ? `${field.value.length} color(s) selected`
+                                      : "Select colors"}
+                                  </span>
+                                  <ChevronDown className="h-4 w-4 opacity-50" />
+                                </button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-full bg-[#1a1025] border-white/10 p-4 max-h-[300px] overflow-y-auto">
+                              <div className="space-y-2">
+                                {AVAILABLE_COLORS.map((color) => (
+                                  <div key={color} className="flex items-center space-x-2">
+                                    <Checkbox
+                                      id={`color-${color}`}
+                                      checked={field.value?.includes(color)}
+                                      onCheckedChange={(checked) => {
+                                        const current = field.value || [];
+                                        if (checked) {
+                                          field.onChange([...current, color]);
+                                        } else {
+                                          field.onChange(current.filter((c) => c !== color));
+                                        }
+                                      }}
+                                      className="border-white/20"
+                                    />
+                                    <label
+                                      htmlFor={`color-${color}`}
+                                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                                    >
+                                      {color}
+                                    </label>
+                                  </div>
+                                ))}
+                              </div>
+                            </PopoverContent>
+                          </Popover>
+                          {field.value && field.value.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              {field.value.map((color) => (
+                                <span
+                                  key={color}
+                                  className="px-2 py-1 bg-purple-600/20 border border-purple-600/40 rounded text-xs"
+                                >
+                                  {color}
+                                </span>
+                              ))}
+                            </div>
+                          )}
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-4">
                     <FormField
                       control={form.control}
                       name="images"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-xs uppercase font-bold tracking-widest text-gray-400">Image URLs (Comma separated)</FormLabel>
+                          <FormLabel className="text-xs uppercase font-bold tracking-widest text-gray-400">Product Images</FormLabel>
                           <FormControl>
-                            <Input 
-                              value={field.value?.join(", ") || ""} 
-                              onChange={(e) => field.onChange(e.target.value.split(",").map(s => s.trim()).filter(Boolean))}
-                              className="bg-black/40 border-white/10" 
-                              placeholder="https://..." 
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="videos"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-xs uppercase font-bold tracking-widest text-gray-400">Video URLs (Comma separated)</FormLabel>
-                          <FormControl>
-                            <Input 
-                              value={field.value?.join(", ") || ""} 
-                              onChange={(e) => field.onChange(e.target.value.split(",").map(s => s.trim()).filter(Boolean))}
-                              className="bg-black/40 border-white/10" 
-                              placeholder="https://..." 
-                            />
+                            <div className="space-y-4">
+                              <div className="flex items-center gap-4">
+                                <label className="flex-1">
+                                  <div className="flex items-center justify-center gap-2 px-4 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg cursor-pointer transition-colors">
+                                    <Upload size={18} />
+                                    <span className="text-sm font-medium">
+                                      {isUploadingImages ? "Uploading..." : "Choose Images"}
+                                    </span>
+                                  </div>
+                                  <input
+                                    type="file"
+                                    multiple
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={(e) => handleImageUpload(e.target.files)}
+                                    disabled={isUploadingImages}
+                                  />
+                                </label>
+                                <span className="text-xs text-gray-400">
+                                  {field.value?.length || 0} image(s) selected
+                                </span>
+                              </div>
+
+                              {/* Image Previews */}
+                              {imagePreviews.length > 0 && (
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                  {imagePreviews.map((preview, index) => (
+                                    <div key={index} className="relative aspect-square rounded-lg overflow-hidden bg-black/40 border border-white/10">
+                                      <img src={preview} alt={`Preview ${index + 1}`} className="w-full h-full object-cover" />
+                                      <button
+                                        type="button"
+                                        onClick={() => removeImage(index)}
+                                        className="absolute top-2 right-2 p-1 bg-red-500 hover:bg-red-600 rounded-full text-white transition-colors"
+                                      >
+                                        <X size={14} />
+                                      </button>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -258,21 +458,72 @@ export default function PostItemPage() {
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="featured"
+                      render={({ field }) => (
+                        <FormItem className="flex items-center gap-2 space-y-0">
+                          <FormControl>
+                            <input
+                              type="checkbox"
+                              checked={field.value || false}
+                              onChange={field.onChange}
+                              className="w-4 h-4 rounded border-white/10 bg-black/40"
+                            />
+                          </FormControl>
+                          <FormLabel className="text-xs uppercase font-bold tracking-widest text-gray-400">Featured</FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="bestSeller"
+                      render={({ field }) => (
+                        <FormItem className="flex items-center gap-2 space-y-0">
+                          <FormControl>
+                            <input
+                              type="checkbox"
+                              checked={field.value || false}
+                              onChange={field.onChange}
+                              className="w-4 h-4 rounded border-white/10 bg-black/40"
+                            />
+                          </FormControl>
+                          <FormLabel className="text-xs uppercase font-bold tracking-widest text-gray-400">Best Seller</FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="newArrival"
+                      render={({ field }) => (
+                        <FormItem className="flex items-center gap-2 space-y-0">
+                          <FormControl>
+                            <input
+                              type="checkbox"
+                              checked={field.value || false}
+                              onChange={field.onChange}
+                              className="w-4 h-4 rounded border-white/10 bg-black/40"
+                            />
+                          </FormControl>
+                          <FormLabel className="text-xs uppercase font-bold tracking-widest text-gray-400">New Arrival</FormLabel>
+                        </FormItem>
+                      )}
+                    />
                     <FormField
                       control={form.control}
                       name="isUpcoming"
                       render={({ field }) => (
                         <FormItem className="flex items-center gap-2 space-y-0">
                           <FormControl>
-                            <input 
-                              type="checkbox" 
-                              checked={field.value || false} 
+                            <input
+                              type="checkbox"
+                              checked={field.value || false}
                               onChange={field.onChange}
                               className="w-4 h-4 rounded border-white/10 bg-black/40"
                             />
                           </FormControl>
-                          <FormLabel className="text-xs uppercase font-bold tracking-widest text-gray-400">Mark as Upcoming Drop</FormLabel>
+                          <FormLabel className="text-xs uppercase font-bold tracking-widest text-gray-400">Upcoming Drop</FormLabel>
                         </FormItem>
                       )}
                     />
@@ -282,14 +533,14 @@ export default function PostItemPage() {
                       render={({ field }) => (
                         <FormItem className="flex items-center gap-2 space-y-0">
                           <FormControl>
-                            <input 
-                              type="checkbox" 
-                              checked={field.value || false} 
+                            <input
+                              type="checkbox"
+                              checked={field.value || false}
                               onChange={field.onChange}
                               className="w-4 h-4 rounded border-white/10 bg-black/40"
                             />
                           </FormControl>
-                          <FormLabel className="text-xs uppercase font-bold tracking-widest text-gray-400">Enable Customization</FormLabel>
+                          <FormLabel className="text-xs uppercase font-bold tracking-widest text-gray-400">Customization</FormLabel>
                         </FormItem>
                       )}
                     />

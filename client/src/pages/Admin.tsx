@@ -1,31 +1,51 @@
+import { apiFetch } from '@/lib/apiClient';
 import { AdminNavbar } from "@/components/layout/AdminNavbar";
 import { Footer } from "@/components/layout/Footer";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LayoutDashboard, ShoppingCart, Users, MessageSquare, Settings } from "lucide-react";
+import { useSession } from "@/hooks/useSession";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Admin() {
-  const [location, setLocation] = useLocation();
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [, setLocation] = useLocation();
+  const { isAdmin, isLoading } = useSession();
+
+  // Fetch admin stats
+  const { data: adminStats } = useQuery({
+    queryKey: ['admin-stats'],
+    queryFn: async () => {
+      const response = await apiFetch('/api/admin/stats');
+      if (!response.ok) throw new Error('Failed to fetch stats');
+      return response.json();
+    },
+    enabled: isAdmin,
+    refetchInterval: 30000, // Refetch every 30 seconds
+  });
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user") || "null");
-    if (!user || !user.isAdmin) {
+    if (!isLoading && !isAdmin) {
       setLocation("/auth");
-    } else {
-      setIsAdmin(true);
     }
-  }, [setLocation]);
+  }, [isAdmin, isLoading, setLocation]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#1a1025] text-white">
+        <div className="text-xl">Loading...</div>
+      </div>
+    );
+  }
 
   if (!isAdmin) return null;
 
   const stats = [
-    { title: "Total Revenue", value: "₦4,250,000", icon: LayoutDashboard, color: "text-green-400" },
-    { title: "Orders", value: "156", icon: ShoppingCart, color: "text-blue-400" },
-    { title: "Customers", value: "1,204", icon: Users, color: "text-purple-400" },
-    { title: "Messages", value: "12", icon: MessageSquare, color: "text-yellow-400" },
+    { title: "Total Revenue", value: "₦0", icon: LayoutDashboard, color: "text-green-400" },
+    { title: "Orders", value: String(adminStats?.orders || 0), icon: ShoppingCart, color: "text-blue-400" },
+    { title: "Customers", value: String(adminStats?.customers || 0), icon: Users, color: "text-purple-400" },
+    { title: "Messages", value: String(adminStats?.messages || 0), icon: MessageSquare, color: "text-yellow-400" },
   ];
 
   return (

@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { queryClient, apiRequest } from "@/lib/queryClient";
+import { queryClient } from "@/lib/queryClient";
+import { apiFetch } from "@/lib/apiClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ArrowLeft, Send } from "lucide-react";
 import { Link } from "wouter";
 import type { Message } from "@shared/schema";
+import { useSocket } from "@/hooks/useSocket";
 
 function getVisitorId(): string {
   let visitorId = localStorage.getItem("bigwise_visitor_id");
@@ -19,31 +21,87 @@ function getVisitorId(): string {
 
 export default function Chat() {
   const [newMessage, setNewMessage] = useState("");
+  const [isAdminTyping, setIsAdminTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const visitorId = getVisitorId();
+  const { socket, isConnected } = useSocket();
 
   const { data: messages = [], isLoading } = useQuery<Message[]>({
-    queryKey: ["/api/messages", visitorId],
-    refetchInterval: 3000,
+    queryKey: ["/api/visitor/messages", visitorId],
+    queryFn: async () => {
+      const res = await apiFetch(`/api/visitor/messages/${visitorId}`);
+      if (!res.ok) throw new Error('Failed to fetch messages');
+      return res.json();
+    },
   });
 
   const sendMessageMutation = useMutation({
     mutationFn: async (content: string) => {
-      return apiRequest("POST", "/api/messages", {
-        visitorId,
-        content,
-        isFromAdmin: false,
-      });
+      const usedWebSocket = socket && isConnected;
+
+      if (usedWebSocket) {
+        socket.emit("message:send", { visitorId, content });
+        return Promise.resolve({ usedWebSocket: true });
+      } else {
+        const res = await apiFetch("/api/visitor/messages", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            visitorId,
+            content,
+          }),
+        });
+        if (!res.ok) throw new Error('Failed to send message');
+        const data = await res.json();
+        return { usedWebSocket: false, data };
+      }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/messages", visitorId] });
+    onSuccess: (result) => {
       setNewMessage("");
+      // Stop typing indicator
+      if (socket) {
+        socket.emit("typing:stop", { visitorId, isTyping: false });
+      }
+      // Only invalidate queries if we used REST API fallback
+      // WebSocket listener will handle cache update via setQueryData
+      if (!result.usedWebSocket) {
+        queryClient.invalidateQueries({ queryKey: ["/api/visitor/messages", visitorId] });
+      }
     },
   });
 
+  // Setup WebSocket event listeners
+  useEffect(() => {
+    if (!socket) return;
+
+    // Join visitor room
+    socket.emit("join:visitor", visitorId);
+
+    // Listen for new messages
+    socket.on("message:new", (message: Message) => {
+      queryClient.setQueryData<Message[]>(
+        ["/api/visitor/messages", visitorId],
+        (old) => [...(old || []), message]
+      );
+    });
+
+    // Listen for typing updates
+    socket.on("typing:update", (data: { visitorId: string; isTyping: boolean; isAdmin: boolean }) => {
+      if (data.visitorId === visitorId && data.isAdmin) {
+        setIsAdminTyping(data.isTyping);
+      }
+    });
+
+    return () => {
+      socket.off("message:new");
+      socket.off("typing:update");
+    };
+  }, [socket, visitorId]);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, isAdminTyping]);
 
   const handleSend = () => {
     if (newMessage.trim()) {
@@ -58,6 +116,25 @@ export default function Chat() {
     }
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewMessage(e.target.value);
+
+    // Typing indicator logic
+    if (socket && isConnected) {
+      socket.emit("typing:start", { visitorId, isTyping: true });
+
+      // Clear previous timeout
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+
+      // Stop typing after 2 seconds of inactivity
+      typingTimeoutRef.current = setTimeout(() => {
+        socket.emit("typing:stop", { visitorId, isTyping: false });
+      }, 2000);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#1a1025] to-[#251b35] flex flex-col">
       <header className="sticky top-0 z-50 bg-[#1a1025]/95 backdrop-blur-md border-b border-purple-900/30 p-4">
@@ -68,7 +145,7 @@ export default function Chat() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-lg font-semibold text-white">BIGWISE Support</h1>
+            <h1 className="text-lg font-semibold text-white">Message Bigwise</h1>
             <p className="text-sm text-purple-300">We typically reply within minutes</p>
           </div>
         </div>
@@ -79,7 +156,7 @@ export default function Chat() {
           <div className="space-y-4 pb-4">
             {messages.length === 0 && !isLoading && (
               <div className="text-center py-12">
-                <p className="text-purple-300 mb-2">Welcome to BIGWISE Support</p>
+                <p className="text-purple-300 mb-2">Welcome to Message Bigwise</p>
                 <p className="text-purple-400/60 text-sm">
                   Send us a message and we'll get back to you shortly.
                 </p>
@@ -117,6 +194,19 @@ export default function Chat() {
                 </div>
               </div>
             ))}
+
+            {isAdminTyping && (
+              <div className="flex justify-start">
+                <div className="bg-purple-900/40 text-purple-100 rounded-2xl px-4 py-3">
+                  <div className="flex gap-1">
+                    <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                    <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                    <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div ref={messagesEndRef} />
           </div>
         </ScrollArea>
@@ -125,7 +215,7 @@ export default function Chat() {
           <div className="flex gap-2">
             <Input
               value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
+              onChange={handleInputChange}
               onKeyPress={handleKeyPress}
               placeholder="Type your message..."
               className="flex-1 bg-purple-900/20 border-purple-700/50 text-white placeholder:text-purple-400/60"

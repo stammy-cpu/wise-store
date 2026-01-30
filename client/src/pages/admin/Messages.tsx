@@ -1,6 +1,6 @@
 import { AdminNavbar } from "@/components/layout/AdminNavbar";
 import { Footer } from "@/components/layout/Footer";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "@/components/ui/card";
@@ -11,71 +11,188 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Message } from "@shared/schema";
 import { Send, User as UserIcon, CheckCircle2, MessageSquare } from "lucide-react";
 import { format } from "date-fns";
+import { useSession } from "@/hooks/useSession";
+import { useSocket } from "@/hooks/useSocket";
 
 type Conversation = {
   visitorId: string;
   lastMessage: Message;
   unreadCount: number;
+  user?: {
+    username: string;
+    fullName: string;
+    email: string;
+  };
 };
 
 export default function AdminMessages() {
   const [, setLocation] = useLocation();
   const [selectedVisitorId, setSelectedVisitorId] = useState<string | null>(null);
   const [reply, setReply] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [visitorTypingMap, setVisitorTypingMap] = useState<Map<string, boolean>>(new Map());
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const { user, isAdmin, isLoading } = useSession();
+  const { socket, isConnected } = useSocket();
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user") || "null");
-    if (!user || !user.isAdmin) {
+    if (!isLoading && !isAdmin) {
       setLocation("/auth");
-    } else {
-      setIsAdmin(true);
     }
-  }, [setLocation]);
+  }, [isAdmin, isLoading, setLocation]);
 
   const { data: conversations, isLoading: loadingConvs } = useQuery<Conversation[]>({
     queryKey: ["/api/conversations"],
-    refetchInterval: 3000,
   });
 
   const { data: messages } = useQuery<Message[]>({
     queryKey: ["/api/messages", selectedVisitorId],
     enabled: !!selectedVisitorId,
-    refetchInterval: 2000,
   });
 
   const sendMutation = useMutation({
     mutationFn: async (content: string) => {
-      if (!selectedVisitorId) return;
-      const user = JSON.parse(localStorage.getItem("user") || "null");
-      await apiRequest("POST", "/api/messages", {
-        content,
-        visitorId: selectedVisitorId,
-        isFromAdmin: true,
-        userId: user?.id,
-      });
+      if (!selectedVisitorId) return { usedWebSocket: false };
+
+      const usedWebSocket = socket && isConnected;
+
+      if (usedWebSocket) {
+        socket.emit("message:admin", {
+          visitorId: selectedVisitorId,
+          content,
+          userId: user?.id,
+        });
+        return { usedWebSocket: true };
+      } else {
+        await apiRequest("POST", "/api/messages", {
+          content,
+          visitorId: selectedVisitorId,
+          isFromAdmin: true,
+          userId: user?.id,
+        });
+        return { usedWebSocket: false };
+      }
     },
-    onSuccess: () => {
+    onSuccess: (result) => {
       setReply("");
-      queryClient.invalidateQueries({ queryKey: ["/api/messages", selectedVisitorId] });
-      queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
+      if (socket && selectedVisitorId) {
+        socket.emit("typing:admin", { visitorId: selectedVisitorId, isTyping: false });
+      }
+      // Only invalidate queries if we used REST API fallback
+      // WebSocket listener will handle cache update via setQueryData
+      if (!result?.usedWebSocket && selectedVisitorId) {
+        queryClient.invalidateQueries({ queryKey: ["/api/messages", selectedVisitorId] });
+      }
     },
   });
 
   const markReadMutation = useMutation({
     mutationFn: async (visitorId: string) => {
-      await apiRequest("POST", `/api/messages/${visitorId}/read`, {});
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
+      if (socket && isConnected) {
+        socket.emit("messages:read", visitorId);
+        return Promise.resolve();
+      } else {
+        await apiRequest("POST", `/api/messages/${visitorId}/read`, {});
+      }
     },
   });
+
+  // Setup WebSocket event listeners
+  useEffect(() => {
+    if (!socket) return;
+
+    // Join admin room
+    socket.emit("join:admin");
+
+    // Listen for new messages
+    socket.on("message:new", (message: Message) => {
+      // Update messages for current conversation
+      if (message.visitorId === selectedVisitorId) {
+        queryClient.setQueryData<Message[]>(
+          ["/api/messages", selectedVisitorId],
+          (old) => [...(old || []), message]
+        );
+      }
+
+      // Play notification sound for visitor messages
+      if (!message.isFromAdmin) {
+        playNotificationSound();
+      }
+    });
+
+    // Listen for conversation updates
+    socket.on("conversation:update", () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
+    });
+
+    // Listen for typing updates
+    socket.on("typing:update", (data: { visitorId: string; isTyping: boolean; isAdmin: boolean }) => {
+      if (!data.isAdmin) {
+        setVisitorTypingMap((prev) => new Map(prev).set(data.visitorId, data.isTyping));
+      }
+    });
+
+    return () => {
+      socket.off("message:new");
+      socket.off("conversation:update");
+      socket.off("typing:update");
+    };
+  }, [socket, selectedVisitorId]);
 
   useEffect(() => {
     if (selectedVisitorId) {
       markReadMutation.mutate(selectedVisitorId);
     }
   }, [selectedVisitorId]);
+
+  const playNotificationSound = () => {
+    // Simple beep using Web Audio API
+    try {
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      oscillator.frequency.value = 800;
+      oscillator.type = "sine";
+
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.5);
+    } catch (e) {
+      // Silent fail if audio context not supported
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setReply(e.target.value);
+
+    // Typing indicator logic
+    if (socket && isConnected && selectedVisitorId) {
+      socket.emit("typing:admin", { visitorId: selectedVisitorId, isTyping: true });
+
+      // Clear previous timeout
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+
+      // Stop typing after 2 seconds of inactivity
+      typingTimeoutRef.current = setTimeout(() => {
+        socket.emit("typing:admin", { visitorId: selectedVisitorId, isTyping: false });
+      }, 2000);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#1a1025] text-white">
+        <div className="text-xl">Loading...</div>
+      </div>
+    );
+  }
 
   if (!isAdmin) return null;
 
@@ -105,7 +222,7 @@ export default function AdminMessages() {
                   >
                     <div className="flex justify-between items-start mb-1">
                       <span className="font-bold text-sm truncate">
-                        Visitor {conv.visitorId.slice(0, 8)}
+                        {conv.user?.username || conv.user?.fullName || "Guest User"}
                       </span>
                       {conv.unreadCount > 0 && (
                         <span className="bg-purple-600 text-white text-[10px] px-2 py-0.5 rounded-full">
@@ -113,7 +230,13 @@ export default function AdminMessages() {
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-gray-400 truncate">{conv.lastMessage.content}</p>
+                    <p className="text-xs text-gray-400 truncate">
+                      {visitorTypingMap.get(conv.visitorId) ? (
+                        <span className="text-purple-400 italic">typing...</span>
+                      ) : (
+                        conv.lastMessage.content
+                      )}
+                    </p>
                     <span className="text-[10px] text-gray-500">
                       {format(new Date(conv.lastMessage.createdAt!), "MMM d, HH:mm")}
                     </span>
@@ -133,8 +256,15 @@ export default function AdminMessages() {
                       <UserIcon className="text-purple-400 w-5 h-5" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-sm">Visitor {selectedVisitorId.slice(0, 8)}</h3>
-                      <span className="text-[10px] text-green-400 uppercase tracking-widest">Active</span>
+                      <h3 className="font-bold text-sm">
+                        {conversations?.find(c => c.visitorId === selectedVisitorId)?.user?.username || conversations?.find(c => c.visitorId === selectedVisitorId)?.user?.fullName || "Guest User"}
+                      </h3>
+                      <div className="flex items-center gap-1">
+                        <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-400' : 'bg-gray-400'}`} />
+                        <span className="text-[10px] text-gray-400 uppercase tracking-widest">
+                          {isConnected ? 'Real-time' : 'Offline'}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -163,6 +293,22 @@ export default function AdminMessages() {
                         </div>
                       </motion.div>
                     ))}
+
+                    {visitorTypingMap.get(selectedVisitorId) && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="flex justify-start"
+                      >
+                        <div className="bg-white/10 text-gray-200 rounded-2xl rounded-tl-none p-3">
+                          <div className="flex gap-1">
+                            <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                            <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                            <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
                   </AnimatePresence>
                 </div>
 
@@ -176,7 +322,7 @@ export default function AdminMessages() {
                   >
                     <Input
                       value={reply}
-                      onChange={(e) => setReply(e.target.value)}
+                      onChange={handleInputChange}
                       placeholder="Type your reply..."
                       className="bg-black/20 border-white/10 text-white h-10 rounded-full px-4"
                     />

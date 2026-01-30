@@ -6,3 +6,8 @@ vite.config.ts.*
 *.tar.gz
 .vercel
 .env*.local
+.local/
+build_output.log
+cookies.txt
+nul
+DEPLOYMENT_*.md

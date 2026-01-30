@@ -1,32 +1,29 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { ArrowRight } from "lucide-react";
-import best1 from "@assets/best_1.jpg";
-import best2 from "@assets/best_2.jpg";
-import best3 from "@assets/best_3.jpg";
 import { Button } from "@/components/ui/button";
 
 const collections = [
   {
     id: 1,
-    title: "Jackets & Outerwear",
-    image: best1,
+    title: "The Store",
+    image: "https://i.pinimg.com/736x/8c/65/8a/8c658a76060b934a06ef7373ea4bcd59.jpg",
     link: "/collections",
-    description: "Premium urban layers crafted for style and comfort."
+    description: "Step into our physical space where fashion meets culture."
   },
   {
     id: 2,
-    title: "Dresses & Formal",
-    image: best2,
+    title: "The Vibe",
+    image: "https://i.pinimg.com/736x/0e/c3/72/0ec3729a50b57a8c1eed0554c06bdb79.jpg",
     link: "/collections",
-    description: "Elegant pieces for every occasion."
+    description: "Experience the energy and community that makes Bigwise special."
   },
   {
     id: 3,
-    title: "Streetwear Essentials",
-    image: best3,
+    title: "The Drip",
+    image: "https://i.pinimg.com/736x/91/c2/7d/91c27d2699705c7d06c84b546d29ce26.jpg",
     link: "/collections",
-    description: "Contemporary pieces that define your vibe."
+    description: "Fresh fits and timeless pieces that define your style."
   }
 ];
 
@@ -36,8 +33,8 @@ export function FeaturedCollections() {
       <div className="container mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-12 gap-4">
           <div>
-            <h2 className="text-3xl md:text-4xl font-heading font-bold mb-2 md:mb-4">Featured Collections</h2>
-            <p className="text-purple-200 max-w-md text-sm md:text-base">Discover our latest arrivals, designed to elevate your everyday wardrobe with premium materials and timeless cuts.</p>
+            <h2 className="text-3xl md:text-4xl font-heading font-bold mb-2 md:mb-4">The Bigwise Experience</h2>
+            <p className="text-purple-200 max-w-md text-sm md:text-base">More than just fashion—it's a lifestyle. Step into our world and see what makes Bigwise the home of authentic street culture.</p>
           </div>
           <Link href="/collections" className="hidden md:flex items-center gap-2 text-sm uppercase tracking-widest font-bold hover:text-purple-300 transition-colors">
               View All <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />

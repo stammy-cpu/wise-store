@@ -1,14 +1,24 @@
 import { Link, useLocation } from "wouter";
-import { Menu, X, ShoppingBag, Search, User, Heart } from "lucide-react";
+import { Menu, X, ShoppingBag, Search, User, Heart, LogOut, Package } from "lucide-react";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useSession } from "@/hooks/useSession";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const [cartCount, setCartCount] = useState(0);
+  const { user, isAuthenticated, logout } = useSession();
 
   useEffect(() => {
     const updateCartCount = () => {
@@ -79,9 +89,47 @@ export function Navbar() {
 
           {/* Desktop Right Links */}
           <div className="hidden md:flex gap-6 items-center">
-            <Link href="/auth">
-              <User className="w-5 h-5 cursor-pointer text-white/90 hover:text-purple-300 transition-colors" />
-            </Link>
+            {isAuthenticated ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="focus:outline-none">
+                    <User className="w-5 h-5 cursor-pointer text-white/90 hover:text-purple-300 transition-colors" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="bg-[#1a1025] border-white/10 text-white w-48">
+                  <DropdownMenuLabel className="text-purple-300">
+                    {user?.username}
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator className="bg-white/10" />
+                  <DropdownMenuItem
+                    className="focus:bg-white/10 focus:text-white cursor-pointer"
+                    onClick={() => setLocation("/profile")}
+                  >
+                    <User className="w-4 h-4 mr-2" />
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="focus:bg-white/10 focus:text-white cursor-pointer"
+                    onClick={() => setLocation("/orders")}
+                  >
+                    <Package className="w-4 h-4 mr-2" />
+                    Orders
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-white/10" />
+                  <DropdownMenuItem
+                    className="focus:bg-white/10 focus:text-white cursor-pointer"
+                    onClick={() => logout()}
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link href="/auth">
+                <User className="w-5 h-5 cursor-pointer text-white/90 hover:text-purple-300 transition-colors" />
+              </Link>
+            )}
             <Link href="/wishlist">
                <Heart className="w-5 h-5 cursor-pointer text-white/90 hover:text-purple-300 transition-colors" />
             </Link>
@@ -128,3 +176,4 @@ export function Navbar() {
     </nav>
   );
 }
+

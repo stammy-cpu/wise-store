@@ -5,15 +5,20 @@ import { z } from "zod";
 
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  username: text("username").notNull().unique(),
-visitorId: text("visitor_id").unique(),
+  email: text("email").notNull().unique(),
+  username: text("username").notNull(),
+  fullName: text("full_name").notNull(),
+  visitorId: text("visitor_id").unique(),
   password: text("password").notNull(),
   isAdmin: boolean("is_admin").default(false),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
+  email: true,
   username: true,
+  fullName: true,
   password: true,
+  visitorId: true,
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -32,6 +37,8 @@ export const products = pgTable("products", {
   category: text("category"),
   sex: text("sex"),
   featured: boolean("featured").default(false),
+  bestSeller: boolean("best_seller").default(false),
+  newArrival: boolean("new_arrival").default(false),
   isUpcoming: boolean("is_upcoming").default(false),
   dropDate: timestamp("drop_date"),
   allowCustomization: boolean("allow_customization").default(false),
@@ -84,3 +91,44 @@ export const insertMessageSchema = createInsertSchema(messages).pick({
 
 export type InsertMessage = z.infer<typeof insertMessageSchema>;
 export type Message = typeof messages.$inferSelect;
+
+export const cartItems = pgTable("cart_items", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: text("user_id"),
+  visitorId: text("visitor_id").notNull(),
+  productId: text("product_id").notNull(),
+  name: text("name").notNull(),
+  price: text("price").notNull(),
+  image: text("image").notNull(),
+  size: text("size"),
+  color: text("color"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertCartItemSchema = createInsertSchema(cartItems).omit({ id: true, createdAt: true });
+export type InsertCartItem = z.infer<typeof insertCartItemSchema>;
+export type CartItem = typeof cartItems.$inferSelect;
+
+export const wishlistItems = pgTable("wishlist_items", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: text("user_id"),
+  visitorId: text("visitor_id").notNull(),
+  productId: text("product_id").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertWishlistItemSchema = createInsertSchema(wishlistItems).omit({ id: true, createdAt: true });
+export type InsertWishlistItem = z.infer<typeof insertWishlistItemSchema>;
+export type WishlistItem = typeof wishlistItems.$inferSelect;
+
+export const contactSubmissions = pgTable("contact_submissions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  message: text("message").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertContactSubmissionSchema = createInsertSchema(contactSubmissions).omit({ id: true, createdAt: true });
+export type InsertContactSubmission = z.infer<typeof insertContactSubmissionSchema>;
+export type ContactSubmission = typeof contactSubmissions.$inferSelect;

@@ -8,27 +8,18 @@ import { type Message } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import { cn } from "@/lib/utils";
+import { useSession } from "@/hooks/useSession";
 
 export function FloatingChatButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
   const { toast } = useToast();
-  const [user, setUser] = useState<any>(null);
+  const { user, isAuthenticated } = useSession();
 
+  const visitorId = localStorage.getItem("bigwise_visitor_id") || `visitor_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
   useEffect(() => {
-    const checkUser = () => {
-      const storedUser = localStorage.getItem("user");
-      setUser(storedUser ? JSON.parse(storedUser) : null);
-    };
-    checkUser();
-    window.addEventListener('storage', checkUser);
-    return () => window.removeEventListener('storage', checkUser);
-  }, []);
-
-  const visitorId = localStorage.getItem("visitorId") || Math.random().toString(36).substring(7);
-  useEffect(() => {
-    if (!localStorage.getItem("visitorId")) {
-      localStorage.setItem("visitorId", visitorId);
+    if (!localStorage.getItem("bigwise_visitor_id")) {
+      localStorage.setItem("bigwise_visitor_id", visitorId);
     }
   }, [visitorId]);
 
@@ -64,7 +55,7 @@ export function FloatingChatButton() {
       {isOpen ? (
         <Card className="w-80 md:w-96 bg-[#251b35] border-white/10 text-white shadow-2xl overflow-hidden animate-in slide-in-from-bottom-4">
           <CardHeader className="bg-purple-600 p-4 flex flex-row items-center justify-between space-y-0">
-            <CardTitle className="text-sm font-bold uppercase tracking-widest text-white">BIGWISE Support</CardTitle>
+            <CardTitle className="text-sm font-bold uppercase tracking-widest text-white">Message Bigwise</CardTitle>
             <Button variant="ghost" size="icon" className="h-8 w-8 text-white hover:bg-white/20" onClick={() => setIsOpen(false)}>
               <X size={18} />
             </Button>
