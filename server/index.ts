@@ -18,7 +18,7 @@ setupSocket(httpServer);
 
 // Enable CORS for frontend on different domain
 app.use(cors({
-  origin: ['https://big-wise.com', 'https://www.big-wise.com', 'http://localhost:5000', 'http://localhost:5656'],
+  origin: ['https://big-wise.com', 'https://www.big-wise.com', 'https://api.big-wise.com', 'http://localhost:5000', 'http://localhost:5656'],
   credentials: true,
 }));
 
