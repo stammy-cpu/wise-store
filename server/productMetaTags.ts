@@ -40,9 +40,9 @@ export async function productMetaTagsMiddleware(
     const siteName = "Bigwise Clothings";
     const productTitle = product.name;
     const productDescription = product.description || "Check out this item from Bigwise Clothings";
-    const productImage = product.images[0] || "/opengraph-new.jpg";
+    const productImage = product.images?.[0] || "/opengraph-new.jpg";
     const productPrice = `₦${product.price}`;
-    const productSizes = product.sizes.join(", ");
+    const productSizes = product.sizes && product.sizes.length > 0 ? product.sizes.join(", ") : "Various sizes";
 
     // Construct the full description with price and sizes
     const fullDescription = `${productDescription}\n\nPrice: ${productPrice}\nSizes: ${productSizes}`;
@@ -113,9 +113,11 @@ export async function productMetaTagsMiddleware(
 
     // Send the modified HTML
     res.setHeader('Content-Type', 'text/html');
+    console.log(`[productMetaTags] Successfully generated meta tags for product: ${productId}`);
     res.send(html);
   } catch (error) {
-    console.error('[productMetaTags] Error generating meta tags:', error);
+    console.error('[productMetaTags] Error generating meta tags for product:', productId);
+    console.error('[productMetaTags] Error details:', error);
     next();
   }
 }

@@ -1,12 +1,9 @@
 import { motion } from "framer-motion";
-import ambassador1 from "@assets/ambassador_final_1.jpg";
-import ambassador2 from "@assets/ambassador_final_2.jpg";
-import ambassador3 from "@assets/ambassador_final_3.jpg";
 
 const ambassadors = [
-  { name: "David O.", role: "Creative Director", image: ambassador1 },
-  { name: "Chinelo A.", role: "Fashion Enthusiast", image: ambassador2 },
-  { name: "Tobi L.", role: "Urban Photographer", image: ambassador3 },
+  { name: "ED Visuals", role: "Photographer", image: "https://i.pinimg.com/736x/51/e2/ef/51e2ef57015e3b9510c8a87520c0a646.jpg" },
+  { name: "yung clef", role: "Fashion Enthusiast", image: "https://i.pinimg.com/474x/5e/7b/3d/5e7b3dfba8cd062663e24e4e6ba4e922.jpg" },
+  { name: "Ayo Santos", role: "Brand PR", image: "https://i.pinimg.com/736x/92/5c/63/925c639c709c610a0f8ed4c493df99ab.jpg" },
 ];
 
 export function Ambassadors() {
