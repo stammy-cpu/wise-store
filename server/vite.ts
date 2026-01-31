@@ -57,7 +57,7 @@ export async function setupVite(server: Server, app: Express) {
       let template = await fs.promises.readFile(clientTemplate, "utf-8");
 
       // Inject dynamic meta tags for product pages
-      const productMatch = req.path.match(/^\/products\/([a-zA-Z0-9-]+)$/);
+      const productMatch = req.path.match(/^\/product\/([a-zA-Z0-9-]+)$/);
       if (productMatch) {
         const productId = productMatch[1];
         try {

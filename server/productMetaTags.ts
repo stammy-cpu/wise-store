@@ -18,7 +18,7 @@ export async function productMetaTagsMiddleware(
   next: NextFunction
 ) {
   // Only handle product detail pages
-  const productMatch = req.path.match(/^\/products\/([a-zA-Z0-9-]+)$/);
+  const productMatch = req.path.match(/^\/product\/([a-zA-Z0-9-]+)$/);
   if (!productMatch) {
     return next();
   }
