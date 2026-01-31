@@ -202,6 +202,26 @@ export async function registerRoutes(
     }
   });
 
+  // Get best sellers (public) - must come before /api/products/:id
+  app.get("/api/products/bestsellers", async (_req, res) => {
+    try {
+      const bestSellers = await storage.getBestSellers();
+      res.json(bestSellers);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch best sellers" });
+    }
+  });
+
+  // Get trending products (public) - must come before /api/products/:id
+  app.get("/api/products/trending", async (_req, res) => {
+    try {
+      const trending = await storage.getTrending();
+      res.json(trending);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch trending products" });
+    }
+  });
+
   // Get products (public)
   app.get("/api/products", async (_req, res) => {
     try {
