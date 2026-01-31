@@ -27,6 +27,7 @@ export const sessionMiddleware = session({
     httpOnly: CONFIG.session.httpOnly,
     sameSite: CONFIG.session.sameSite,
     maxAge: CONFIG.session.maxAge,
+    domain: CONFIG.isProduction ? '.big-wise.com' : undefined,
   },
 });
 
