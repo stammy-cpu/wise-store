@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import { productMetaTagsMiddleware } from "./productMetaTags";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -16,6 +17,9 @@ export function serveStatic(app: Express) {
   }
 
   app.use(express.static(distPath));
+
+  // Inject dynamic meta tags for product pages (before catch-all)
+  app.use(productMetaTagsMiddleware);
 
   // fall through to index.html if the file doesn't exist
   app.use("*", (_req, res) => {
