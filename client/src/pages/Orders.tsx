@@ -1,55 +1,173 @@
-import { useSession } from "@/hooks/useSession";
+import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
-import { Package } from "lucide-react";
-import { useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Package, Calendar, CreditCard, MapPin } from "lucide-react";
+import { format } from "date-fns";
+
+interface OrderItem {
+  name: string;
+  price: string;
+  size?: string;
+  color?: string;
+  image: string;
+  quantity: number;
+}
+
+interface Order {
+  id: string;
+  items: string;
+  total: string;
+  status: string;
+  shippingAddress: string;
+  paymentMethod: string;
+  createdAt: string;
+}
 
 export default function Orders() {
-  const { user, isAuthenticated, isLoading } = useSession();
   const [, setLocation] = useLocation();
 
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      setLocation("/auth");
-    }
-  }, [isLoading, isAuthenticated, setLocation]);
+  const { data: session, isLoading: sessionLoading } = useQuery({
+    queryKey: ["/api/auth/session"],
+    retry: false,
+  });
 
-  if (isLoading) {
+  const { data: orders, isLoading: ordersLoading } = useQuery<Order[]>({
+    queryKey: ["/api/orders"],
+    enabled: !!session?.user,
+  });
+
+  if (sessionLoading || ordersLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#1a1025] to-[#251b35] flex items-center justify-center">
-        <div className="text-white">Loading...</div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-gray-600">Loading...</div>
       </div>
     );
   }
 
-  if (!isAuthenticated) {
+  if (!session?.user) {
+    setLocation("/auth");
     return null;
   }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-[#1a1025] to-[#251b35] pt-24 pb-12">
-      <div className="container mx-auto px-6 md:px-8 lg:px-12">
-        <div className="max-w-4xl mx-auto">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2">Your Orders</h1>
-            <p className="text-purple-300">View and track your order history</p>
-          </div>
+  const getStatusColor = (status: string) => {
+    const colors = {
+      pending: "bg-yellow-100 text-yellow-800",
+      processing: "bg-blue-100 text-blue-800",
+      shipped: "bg-purple-100 text-purple-800",
+      delivered: "bg-green-100 text-green-800",
+      cancelled: "bg-red-100 text-red-800",
+    };
+    return colors[status as keyof typeof colors] || "bg-gray-100 text-gray-800";
+  };
 
-          <div className="bg-[#251b35] border border-white/10 rounded-2xl p-12 shadow-xl text-center">
-            <div className="w-20 h-20 bg-purple-600/20 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Package className="w-10 h-10 text-purple-400" />
-            </div>
-            <h2 className="text-xl font-semibold text-white mb-2">No orders yet</h2>
-            <p className="text-purple-300 mb-6">
-              You haven't placed any orders yet. Start shopping to see your orders here!
-            </p>
-            <a
-              href="/collections"
-              className="inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-full uppercase tracking-wider text-sm transition-colors"
-            >
-              Start Shopping
-            </a>
-          </div>
+  return (
+    <div className="min-h-screen bg-gray-50 py-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">My Orders</h1>
+          <p className="mt-2 text-gray-600">View and track your order history</p>
         </div>
+
+        {!orders || orders.length === 0 ? (
+          <Card>
+            <CardContent className="py-12 text-center">
+              <Package className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No orders yet</h3>
+              <p className="text-gray-600 mb-6">Start shopping to see your orders here</p>
+              <button
+                onClick={() => setLocation("/collections")}
+                className="bg-black text-white px-6 py-2 rounded-md hover:bg-gray-800 transition-colors"
+              >
+                Browse Collections
+              </button>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="space-y-6">
+            {orders.map((order) => {
+              const items: OrderItem[] = JSON.parse(order.items);
+              const address = JSON.parse(order.shippingAddress);
+
+              return (
+                <Card key={order.id}>
+                  <CardHeader className="bg-gray-50">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div>
+                        <CardTitle className="text-lg">Order #{order.id.slice(0, 8)}</CardTitle>
+                        <div className="flex items-center gap-2 mt-1 text-sm text-gray-600">
+                          <Calendar className="w-4 h-4" />
+                          {format(new Date(order.createdAt), "MMM dd, yyyy")}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <Badge className={getStatusColor(order.status)}>
+                          {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                        </Badge>
+                        <div className="text-right">
+                          <div className="text-sm text-gray-600">Total</div>
+                          <div className="text-lg font-semibold">${order.total}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pt-6">
+                    {/* Order Items */}
+                    <div className="space-y-4 mb-6">
+                      {items.map((item, index) => (
+                        <div key={index} className="flex gap-4">
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-20 h-20 object-cover rounded-md"
+                          />
+                          <div className="flex-1">
+                            <h4 className="font-medium text-gray-900">{item.name}</h4>
+                            <div className="text-sm text-gray-600 space-y-1">
+                              {item.size && <p>Size: {item.size}</p>}
+                              {item.color && <p>Color: {item.color}</p>}
+                              <p>Quantity: {item.quantity}</p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-medium">${item.price}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Shipping & Payment Info */}
+                    <div className="grid sm:grid-cols-2 gap-4 pt-4 border-t">
+                      <div className="flex gap-3">
+                        <MapPin className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">Shipping Address</div>
+                          <div className="text-sm text-gray-600 mt-1">
+                            <p>{address.fullName}</p>
+                            <p>{address.street}</p>
+                            <p>
+                              {address.city}, {address.state} {address.zipCode}
+                            </p>
+                            <p>{address.country}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex gap-3">
+                        <CreditCard className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">Payment Method</div>
+                          <div className="text-sm text-gray-600 mt-1">
+                            {order.paymentMethod.charAt(0).toUpperCase() + order.paymentMethod.slice(1)}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,62 +1,124 @@
-import { useSession } from "@/hooks/useSession";
+import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
-import { User } from "lucide-react";
-import { useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { User, Mail, LogOut, Package } from "lucide-react";
 
 export default function Profile() {
-  const { user, isAuthenticated, isLoading } = useSession();
   const [, setLocation] = useLocation();
 
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+  const { data: session, isLoading } = useQuery({
+    queryKey: ["/api/auth/session"],
+    retry: false,
+  });
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/logout", {
+        method: "POST",
+        credentials: "include",
+      });
       setLocation("/auth");
+    } catch (error) {
+      console.error("Logout failed:", error);
     }
-  }, [isLoading, isAuthenticated, setLocation]);
+  };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#1a1025] to-[#251b35] flex items-center justify-center">
-        <div className="text-white">Loading...</div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-gray-600">Loading...</div>
       </div>
     );
   }
 
-  if (!isAuthenticated) {
+  if (!session?.user) {
+    setLocation("/auth");
     return null;
   }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-[#1a1025] to-[#251b35] pt-24 pb-12">
-      <div className="container mx-auto px-6 md:px-8 lg:px-12">
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-[#251b35] border border-white/10 rounded-2xl p-8 shadow-xl">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center">
-                <User className="w-8 h-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-white">{user?.username}</h1>
-                <p className="text-purple-300 text-sm">Your Profile</p>
-              </div>
-            </div>
+  const user = session.user;
 
-            <div className="space-y-6">
+  return (
+    <div className="min-h-screen bg-gray-50 py-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">My Profile</h1>
+          <p className="mt-2 text-gray-600">Manage your account information</p>
+        </div>
+
+        <div className="grid gap-6">
+          {/* Profile Information Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <User className="w-5 h-5" />
+                Account Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
               <div>
-                <label className="text-xs uppercase tracking-widest font-bold text-gray-400 mb-2 block">
-                  Username
-                </label>
-                <div className="bg-black/20 border border-white/10 rounded-lg p-3 text-white">
-                  {user?.username}
+                <label className="text-sm font-medium text-gray-700">Full Name</label>
+                <p className="mt-1 text-gray-900">{user.fullName}</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700">Username</label>
+                <p className="mt-1 text-gray-900">{user.username}</p>
+              </div>
+              <div className="flex items-start gap-2">
+                <Mail className="w-5 h-5 text-gray-400 mt-0.5" />
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Email</label>
+                  <p className="mt-1 text-gray-900">{user.username}</p>
                 </div>
               </div>
+            </CardContent>
+          </Card>
 
-              <div className="pt-6 border-t border-white/10">
-                <p className="text-sm text-purple-300">
-                  Profile editing features coming soon...
-                </p>
-              </div>
-            </div>
-          </div>
+          {/* Quick Actions Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Quick Actions</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Button
+                onClick={() => setLocation("/orders")}
+                variant="outline"
+                className="w-full justify-start"
+              >
+                <Package className="w-4 h-4 mr-2" />
+                View My Orders
+              </Button>
+              <Button
+                onClick={() => setLocation("/wishlist")}
+                variant="outline"
+                className="w-full justify-start"
+              >
+                View Wishlist
+              </Button>
+              <Button
+                onClick={() => setLocation("/cart")}
+                variant="outline"
+                className="w-full justify-start"
+              >
+                View Cart
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Logout Card */}
+          <Card>
+            <CardContent className="pt-6">
+              <Button
+                onClick={handleLogout}
+                variant="destructive"
+                className="w-full"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Logout
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

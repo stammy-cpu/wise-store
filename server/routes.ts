@@ -346,6 +346,39 @@ export async function registerRoutes(
     }
   });
 
+  // ===== Order Routes =====
+
+  // Get user orders (requires authentication)
+  app.get("/api/orders", requireAuth, async (req, res) => {
+    try {
+      const userId = req.session.userId!;
+      const visitorId = req.session.visitorId || "";
+      const orders = await storage.getUserOrders(userId, visitorId);
+      res.json(orders);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch orders" });
+    }
+  });
+
+  // Create new order (requires authentication)
+  app.post("/api/orders", requireAuth, async (req, res) => {
+    try {
+      const userId = req.session.userId!;
+      const visitorId = req.session.visitorId || req.body.visitorId;
+
+      const orderData = {
+        ...req.body,
+        userId,
+        visitorId,
+      };
+
+      const order = await storage.createOrder(orderData);
+      res.status(201).json(order);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create order" });
+    }
+  });
+
   // ===== Admin-Only Routes =====
 
   // Get all conversations (admin only)

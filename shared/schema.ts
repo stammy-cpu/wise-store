@@ -132,3 +132,20 @@ export const contactSubmissions = pgTable("contact_submissions", {
 export const insertContactSubmissionSchema = createInsertSchema(contactSubmissions).omit({ id: true, createdAt: true });
 export type InsertContactSubmission = z.infer<typeof insertContactSubmissionSchema>;
 export type ContactSubmission = typeof contactSubmissions.$inferSelect;
+
+export const orders = pgTable("orders", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: text("user_id"),
+  visitorId: text("visitor_id").notNull(),
+  items: text("items").notNull(), // JSON stringified array of order items
+  total: text("total").notNull(),
+  status: text("status").default("pending"), // pending, processing, shipped, delivered, cancelled
+  shippingAddress: text("shipping_address").notNull(), // JSON stringified address
+  paymentMethod: text("payment_method").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertOrderSchema = createInsertSchema(orders).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertOrder = z.infer<typeof insertOrderSchema>;
+export type Order = typeof orders.$inferSelect;

@@ -17,9 +17,11 @@ import Admin from "@/pages/Admin";
 import ProductsPage from "@/pages/admin/Products";
 import PostItemPage from "@/pages/admin/PostItem";
 import EditProductPage from "@/pages/admin/EditProduct";
-import OrdersPage from "@/pages/admin/Orders";
+import AdminOrdersPage from "@/pages/admin/Orders";
 import MessagesPage from "@/pages/admin/Messages";
 import SizeGuide from "@/pages/SizeGuide";
+import Profile from "@/pages/Profile";
+import Orders from "@/pages/Orders";
 import { FloatingChatButton } from "@/components/FloatingChatButton";
 import { useLocation } from "wouter";
 
@@ -35,11 +37,13 @@ function Router() {
       <Route path="/auth" component={Auth} />
       <Route path="/wishlist" component={Wishlist} />
       <Route path="/chat" component={Chat} />
+      <Route path="/profile" component={Profile} />
+      <Route path="/orders" component={Orders} />
       <Route path="/admin" component={Admin} />
       <Route path="/admin/products" component={ProductsPage} />
       <Route path="/admin/post-item" component={PostItemPage} />
       <Route path="/admin/products/edit/:id" component={EditProductPage} />
-      <Route path="/admin/orders" component={OrdersPage} />
+      <Route path="/admin/orders" component={AdminOrdersPage} />
       <Route path="/admin/messages" component={MessagesPage} />
       <Route path="/size-guide" component={SizeGuide} />
       <Route component={NotFound} />

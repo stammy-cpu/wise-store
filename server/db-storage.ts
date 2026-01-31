@@ -1,5 +1,5 @@
-import type { User, InsertUser, Message, InsertMessage, Product, InsertProduct, ProductNotification, InsertProductNotification, Customization, InsertCustomization, CartItem, InsertCartItem, WishlistItem, InsertWishlistItem, ContactSubmission, InsertContactSubmission } from "@shared/schema";
-import { users, messages, products, productNotifications, customizations, cartItems, wishlistItems, contactSubmissions } from "@shared/schema";
+import type { User, InsertUser, Message, InsertMessage, Product, InsertProduct, ProductNotification, InsertProductNotification, Customization, InsertCustomization, CartItem, InsertCartItem, WishlistItem, InsertWishlistItem, ContactSubmission, InsertContactSubmission, Order, InsertOrder } from "@shared/schema";
+import { users, messages, products, productNotifications, customizations, cartItems, wishlistItems, contactSubmissions, orders } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc } from "drizzle-orm";
 import type { IStorage } from "./storage";
@@ -274,6 +274,42 @@ export class DatabaseStorage implements IStorage {
   async getUnreadMessageCount(): Promise<number> {
     const result = await db.select().from(messages).where(and(eq(messages.read, false), eq(messages.isFromAdmin, false)));
     return result.length;
+  }
+
+  // Order methods
+  async getUserOrders(userId: string, visitorId: string): Promise<Order[]> {
+    const userIdResults = userId
+      ? await db.select().from(orders).where(eq(orders.userId, userId)).orderBy(desc(orders.createdAt))
+      : [];
+    const visitorIdResults = await db.select().from(orders).where(eq(orders.visitorId, visitorId)).orderBy(desc(orders.createdAt));
+
+    // Merge and deduplicate
+    const allOrders = [...userIdResults, ...visitorIdResults];
+    const uniqueOrders = Array.from(new Map(allOrders.map(order => [order.id, order])).values());
+    return uniqueOrders.sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
+  }
+
+  async createOrder(order: InsertOrder): Promise<Order> {
+    const result = await db.insert(orders).values(order).returning();
+    return result[0];
+  }
+
+  async getOrder(orderId: string): Promise<Order | undefined> {
+    const result = await db.select().from(orders).where(eq(orders.id, orderId)).limit(1);
+    return result[0];
+  }
+
+  async getAllOrders(): Promise<Order[]> {
+    return await db.select().from(orders).orderBy(desc(orders.createdAt));
+  }
+
+  async updateOrderStatus(orderId: string, status: string): Promise<Order | undefined> {
+    const result = await db
+      .update(orders)
+      .set({ status, updatedAt: new Date() })
+      .where(eq(orders.id, orderId))
+      .returning();
+    return result[0];
   }
 }
 

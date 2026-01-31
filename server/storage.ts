@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type Message, type InsertMessage, type Product, type InsertProduct, type ProductNotification, type InsertProductNotification, type Customization, type InsertCustomization, type CartItem, type InsertCartItem, type WishlistItem, type InsertWishlistItem, type ContactSubmission, type InsertContactSubmission } from "@shared/schema";
+import { type User, type InsertUser, type Message, type InsertMessage, type Product, type InsertProduct, type ProductNotification, type InsertProductNotification, type Customization, type InsertCustomization, type CartItem, type InsertCartItem, type WishlistItem, type InsertWishlistItem, type ContactSubmission, type InsertContactSubmission, type Order, type InsertOrder } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { hashPassword, isBcryptHash } from "./utils/password";
 import { CONFIG } from "./config";
@@ -37,6 +37,13 @@ export interface IStorage {
   createContactSubmission(submission: InsertContactSubmission): Promise<ContactSubmission>;
   getContactSubmissions(): Promise<ContactSubmission[]>;
 
+  // Orders
+  getUserOrders(userId: string, visitorId: string): Promise<Order[]>;
+  createOrder(order: InsertOrder): Promise<Order>;
+  getOrder(orderId: string): Promise<Order | undefined>;
+  getAllOrders(): Promise<Order[]>;
+  updateOrderStatus(orderId: string, status: string): Promise<Order | undefined>;
+
   // Admin stats
   getCustomerCount(): Promise<number>;
   getUnreadMessageCount(): Promise<number>;
@@ -51,6 +58,7 @@ export class MemStorage implements IStorage {
   private cartItems: Map<string, CartItem>;
   private wishlistItems: Map<string, WishlistItem>;
   private contactSubmissions: Map<string, ContactSubmission>;
+  private orders: Map<string, Order>;
 
   constructor() {
     this.users = new Map();
@@ -61,6 +69,7 @@ export class MemStorage implements IStorage {
     this.cartItems = new Map();
     this.wishlistItems = new Map();
     this.contactSubmissions = new Map();
+    this.orders = new Map();
     // Initialize admin user with hashed password
     this.initializeAdmin();
     // Migrate existing users to link them with their visitor IDs
@@ -372,6 +381,46 @@ export class MemStorage implements IStorage {
 
   async getUnreadMessageCount(): Promise<number> {
     return Array.from(this.messages.values()).filter(msg => !msg.read && !msg.isFromAdmin).length;
+  }
+
+  // Order methods
+  async getUserOrders(userId: string, visitorId: string): Promise<Order[]> {
+    return Array.from(this.orders.values())
+      .filter(order => order.userId === userId || order.visitorId === visitorId)
+      .sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
+  }
+
+  async createOrder(order: InsertOrder): Promise<Order> {
+    const newOrder: Order = {
+      id: randomUUID(),
+      ...order,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.orders.set(newOrder.id, newOrder);
+    return newOrder;
+  }
+
+  async getOrder(orderId: string): Promise<Order | undefined> {
+    return this.orders.get(orderId);
+  }
+
+  async getAllOrders(): Promise<Order[]> {
+    return Array.from(this.orders.values())
+      .sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
+  }
+
+  async updateOrderStatus(orderId: string, status: string): Promise<Order | undefined> {
+    const order = this.orders.get(orderId);
+    if (!order) return undefined;
+
+    const updatedOrder: Order = {
+      ...order,
+      status,
+      updatedAt: new Date(),
+    };
+    this.orders.set(orderId, updatedOrder);
+    return updatedOrder;
   }
 }
 
