@@ -7,7 +7,8 @@
     "dev:client": "vite dev --port 5000",
     "dev": "tsx server/index.ts",
     "build": "tsx script/build.ts",
-    "start": "node dist/index.mjs",
+    "migrate": "node migrate-product-flags.js",
+    "start": "node migrate-product-flags.js && node dist/index.mjs",
     "check": "tsc",
     "db:push": "drizzle-kit push"
   },
