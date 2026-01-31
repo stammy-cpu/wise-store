@@ -14,26 +14,25 @@ import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { useSession } from "@/hooks/useSession";
 import { useToast } from "@/hooks/use-toast";
-import trendingImg1 from "@assets/best_1.jpg";
-import trendingImg2 from "@assets/best_2.jpg";
-import trendingImg3 from "@assets/best_3.jpg";
-import trendingImg4 from "@assets/best_4.jpg";
+import { useQuery } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import type { Product } from "@shared/schema";
 
 // Bigwise WhatsApp number for model applications
 const WHATSAPP_NUMBER = "+2349055376301";
-
-// Placeholder for Trending Items
-const trendingItems = [
-  { id: 1, name: "Street Cargo", price: "₦34,000", image: "https://i.pinimg.com/736x/69/af/14/69af14a75cf43e67e3a892aa48dadccc.jpg" },
-  { id: 2, name: "Premium Jacket", price: "₦65,000", image: "https://i.pinimg.com/736x/77/2b/db/772bdb67cbf7c977bd66020f9aa36228.jpg" },
-  { id: 3, name: "Bucket Hat", price: "₦12,000", image: "https://i.pinimg.com/736x/c4/84/a9/c484a94a27438cf10c3d076987f67d54.jpg" },
-  { id: 4, name: "Hoodie", price: "₦32,000", image: "https://i.pinimg.com/736x/0a/21/80/0a21808c859872850e8eefd2ff52e6e8.jpg" },
-];
 
 export default function Home() {
   const { user, isAuthenticated } = useSession();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+
+  const { data: trendingItems = [], isLoading: trendingLoading } = useQuery<Product[]>({
+    queryKey: ["/api/products/trending"],
+    queryFn: async () => {
+      const res = await apiRequest("GET", "/api/products/trending");
+      return res.json();
+    },
+  });
 
   const handleApplyAsModel = () => {
     if (!isAuthenticated) {
@@ -71,51 +70,53 @@ export default function Home() {
         <SizeGuide />
         
         {/* Trending Section */}
-        <section className="py-20 md:py-24 bg-gradient-to-b from-[#1a1025] to-[#251b35] px-6 md:px-8 lg:px-12">
-          <div className="container mx-auto">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12 gap-4">
-              <h2 className="text-3xl md:text-4xl font-heading font-bold">Trending Now</h2>
-              <Link href="/collections" className="text-purple-400 hover:text-purple-300 flex items-center gap-2 text-sm uppercase tracking-wider font-bold">
-                  View All <ArrowRight size={16} />
-              </Link>
-            </div>
-            
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-              {trendingItems.map((item, i) => (
-                <motion.div 
-                  key={item.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                  className="group cursor-pointer"
-                >
-                  <Link href={`/product/${item.id}`} className="block">
-                      <div className="aspect-[3/4] rounded-lg mb-4 overflow-hidden relative bg-gray-800 border border-white/10 group-hover:border-purple-500/50 transition-all">
-                        <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                        <div className="absolute bottom-0 left-0 right-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                          <Button 
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-                              localStorage.setItem('cart', JSON.stringify([...cart, item]));
-                              window.dispatchEvent(new Event('storage'));
-                              alert(`${item.name} added to cart!`);
-                            }}
-                            className="w-full bg-white text-black hover:bg-gray-200 font-bold rounded-none text-xs uppercase tracking-widest"
-                          >
-                            Quick Add
-                          </Button>
+        {!trendingLoading && trendingItems.length > 0 && (
+          <section className="py-20 md:py-24 bg-gradient-to-b from-[#1a1025] to-[#251b35] px-6 md:px-8 lg:px-12">
+            <div className="container mx-auto">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12 gap-4">
+                <h2 className="text-3xl md:text-4xl font-heading font-bold">Trending Now</h2>
+                <Link href="/collections" className="text-purple-400 hover:text-purple-300 flex items-center gap-2 text-sm uppercase tracking-wider font-bold">
+                    View All <ArrowRight size={16} />
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                {trendingItems.map((item, i) => (
+                  <motion.div
+                    key={item.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.1 }}
+                    className="group cursor-pointer"
+                  >
+                    <Link href={`/product/${item.id}`} className="block">
+                        <div className="aspect-[3/4] rounded-lg mb-4 overflow-hidden relative bg-gray-800 border border-white/10 group-hover:border-purple-500/50 transition-all">
+                          <img src={item.images?.[0] || ''} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                          <div className="absolute bottom-0 left-0 right-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                            <Button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                                localStorage.setItem('cart', JSON.stringify([...cart, { id: item.id, name: item.name, price: item.price, image: item.images?.[0] }]));
+                                window.dispatchEvent(new Event('storage'));
+                                alert(`${item.name} added to cart!`);
+                              }}
+                              className="w-full bg-white text-black hover:bg-gray-200 font-bold rounded-none text-xs uppercase tracking-widest"
+                            >
+                              Quick Add
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                      <h3 className="font-bold text-sm md:text-lg mb-1 group-hover:text-purple-300 transition-colors truncate">{item.name}</h3>
-                      <p className="text-purple-300 font-medium text-sm md:text-base">{item.price}</p>
-                  </Link>
-                </motion.div>
-              ))}
+                        <h3 className="font-bold text-sm md:text-lg mb-1 group-hover:text-purple-300 transition-colors truncate">{item.name}</h3>
+                        <p className="text-green-400 font-medium text-sm md:text-base">₦{item.price}</p>
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* Ambassadors */}
         <Ambassadors />

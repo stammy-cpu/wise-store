@@ -40,6 +40,23 @@ export default function Chat() {
     mutationFn: async (content: string) => {
       const usedWebSocket = socket && isConnected;
 
+      // Create optimistic message
+      const optimisticMessage: Message = {
+        id: `temp-${Date.now()}`,
+        visitorId,
+        content,
+        isFromAdmin: false,
+        createdAt: new Date().toISOString(),
+        isRead: false,
+        userId: null,
+      };
+
+      // Optimistically add message to cache immediately
+      queryClient.setQueryData<Message[]>(
+        ["/api/visitor/messages", visitorId],
+        (old) => [...(old || []), optimisticMessage]
+      );
+
       if (usedWebSocket) {
         socket.emit("message:send", { visitorId, content });
         return Promise.resolve({ usedWebSocket: true });
@@ -82,7 +99,15 @@ export default function Chat() {
     socket.on("message:new", (message: Message) => {
       queryClient.setQueryData<Message[]>(
         ["/api/visitor/messages", visitorId],
-        (old) => [...(old || []), message]
+        (old) => {
+          const messages = old || [];
+          // Remove any temporary optimistic message with similar content
+          const filtered = messages.filter(
+            (msg) => !(msg.id.toString().startsWith("temp-") && msg.content === message.content)
+          );
+          // Add the real message from server
+          return [...filtered, message];
+        }
       );
     });
 

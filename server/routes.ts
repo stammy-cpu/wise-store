@@ -207,8 +207,9 @@ export async function registerRoutes(
     try {
       const bestSellers = await storage.getBestSellers();
       res.json(bestSellers);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch best sellers" });
+    } catch (error: any) {
+      console.error('[API] Best sellers error:', error);
+      res.status(500).json({ error: "Failed to fetch best sellers", details: error.message });
     }
   });
 
@@ -217,8 +218,9 @@ export async function registerRoutes(
     try {
       const trending = await storage.getTrending();
       res.json(trending);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch trending products" });
+    } catch (error: any) {
+      console.error('[API] Trending products error:', error);
+      res.status(500).json({ error: "Failed to fetch trending products", details: error.message });
     }
   });
 

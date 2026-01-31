@@ -145,9 +145,16 @@ export function Navbar() {
             </div>
           </div>
 
-          {/* Mobile Cart/Search (placeholder) */}
-          <div className="flex md:hidden gap-4 text-white">
-             <ShoppingBag className="w-5 h-5" />
+          {/* Mobile Cart */}
+          <div className="flex md:hidden gap-4 text-white relative">
+            <Link href="/cart">
+              <ShoppingBag className="w-5 h-5 cursor-pointer" />
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-purple-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center animate-in zoom-in duration-300">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
           </div>
         </div>
 
@@ -156,8 +163,8 @@ export function Navbar() {
           <div className="md:hidden absolute top-full left-0 w-full bg-[#1a1025] border-b border-white/10 animate-in slide-in-from-top-5">
             <div className="flex flex-col p-6 gap-6 items-center text-white">
               {navLinks.map((link) => (
-                <Link 
-                  key={link.name} 
+                <Link
+                  key={link.name}
                   href={link.href}
                   className="text-lg uppercase tracking-wider font-medium hover:text-purple-300"
                   onClick={() => setIsOpen(false)}
@@ -165,9 +172,39 @@ export function Navbar() {
                   {link.name}
                 </Link>
               ))}
+              {isAuthenticated && (
+                <>
+                  <Link
+                    href="/profile"
+                    className="text-lg uppercase tracking-wider font-medium hover:text-purple-300"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Profile
+                  </Link>
+                  <Link
+                    href="/orders"
+                    className="text-lg uppercase tracking-wider font-medium hover:text-purple-300"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Orders
+                  </Link>
+                </>
+              )}
               <div className="flex gap-6 mt-4 pt-6 border-t border-white/10 w-full justify-center">
-                 <Link href="/auth" onClick={() => setIsOpen(false)}>Login</Link>
-                 <Link href="/cart" onClick={() => setIsOpen(false)}>Cart ({cartCount})</Link>
+                {isAuthenticated ? (
+                  <button
+                    onClick={() => {
+                      logout();
+                      setIsOpen(false);
+                    }}
+                    className="hover:text-purple-300 transition-colors"
+                  >
+                    Logout
+                  </button>
+                ) : (
+                  <Link href="/auth" onClick={() => setIsOpen(false)}>Login</Link>
+                )}
+                <Link href="/wishlist" onClick={() => setIsOpen(false)}>Wishlist</Link>
               </div>
             </div>
           </div>

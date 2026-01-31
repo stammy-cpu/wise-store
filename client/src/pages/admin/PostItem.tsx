@@ -53,6 +53,7 @@ export default function PostItemPage() {
       sex: "Unisex",
       featured: false,
       bestSeller: false,
+      trending: false,
       newArrival: false,
       isUpcoming: false,
       dropDate: null,
@@ -490,6 +491,23 @@ export default function PostItemPage() {
                             />
                           </FormControl>
                           <FormLabel className="text-xs uppercase font-bold tracking-widest text-gray-400">Best Seller</FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="trending"
+                      render={({ field }) => (
+                        <FormItem className="flex items-center gap-2 space-y-0">
+                          <FormControl>
+                            <input
+                              type="checkbox"
+                              checked={field.value || false}
+                              onChange={field.onChange}
+                              className="w-4 h-4 rounded border-white/10 bg-black/40"
+                            />
+                          </FormControl>
+                          <FormLabel className="text-xs uppercase font-bold tracking-widest text-gray-400">Trending</FormLabel>
                         </FormItem>
                       )}
                     />

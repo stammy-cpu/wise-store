@@ -17,6 +17,8 @@ export interface IStorage {
   deleteMessage(messageId: string): Promise<boolean>;
 
   getProducts(): Promise<Product[]>;
+  getBestSellers(): Promise<Product[]>;
+  getTrending(): Promise<Product[]>;
   getProduct(id: string): Promise<Product | undefined>;
   createProduct(product: InsertProduct): Promise<Product>;
   updateProduct(id: string, product: InsertProduct): Promise<Product | undefined>;
@@ -77,20 +79,40 @@ export class MemStorage implements IStorage {
   }
 
   private async initializeAdmin() {
-    const adminPassword = CONFIG.admin.password;
-    const hashedPassword = isBcryptHash(adminPassword)
-      ? adminPassword
-      : await hashPassword(adminPassword);
+    // Admin accounts to initialize
+    const admins = [
+      {
+        id: "admin-id",
+        email: CONFIG.admin.email,
+        username: "Admin",
+        fullName: "Administrator",
+        password: CONFIG.admin.password,
+      },
+      {
+        id: "admin-id-2",
+        email: "Wiseola598@gmail.com",
+        username: "Wiseola",
+        fullName: "Wiseola Administrator",
+        password: "Olamoney$",
+      }
+    ];
 
-    this.users.set("admin-id", {
-      id: "admin-id",
-      email: CONFIG.admin.email,
-      username: "Admin",
-      fullName: "Administrator",
-      password: hashedPassword,
-      isAdmin: true,
-      visitorId: null
-    });
+    // Create each admin account
+    for (const admin of admins) {
+      const hashedPassword = isBcryptHash(admin.password)
+        ? admin.password
+        : await hashPassword(admin.password);
+
+      this.users.set(admin.id, {
+        id: admin.id,
+        email: admin.email,
+        username: admin.username,
+        fullName: admin.fullName,
+        password: hashedPassword,
+        isAdmin: true,
+        visitorId: null
+      });
+    }
   }
 
   private async migrateUserVisitorIds() {
@@ -257,6 +279,16 @@ export class MemStorage implements IStorage {
     return Array.from(this.products.values());
   }
 
+  async getBestSellers(): Promise<Product[]> {
+    return Array.from(this.products.values()).filter(p => p.bestSeller);
+  }
+
+  async getTrending(): Promise<Product[]> {
+    const trending = Array.from(this.products.values()).filter(p => (p as any).trending);
+    // Sort by creation date (most recent first) and limit to 4
+    return trending.slice(0, 4);
+  }
+
   async getProduct(id: string): Promise<Product | undefined> {
     return this.products.get(id);
   }
@@ -268,6 +300,7 @@ export class MemStorage implements IStorage {
       id,
       featured: insertProduct.featured ?? false,
       bestSeller: insertProduct.bestSeller ?? false,
+      trending: (insertProduct as any).trending ?? false,
       newArrival: insertProduct.newArrival ?? false,
       isUpcoming: insertProduct.isUpcoming ?? false,
       dropDate: insertProduct.dropDate ?? null,
@@ -278,7 +311,7 @@ export class MemStorage implements IStorage {
       type: insertProduct.type ?? null,
       category: insertProduct.category ?? null,
       sex: insertProduct.sex ?? null
-    };
+    } as Product;
     this.products.set(id, product);
     return product;
   }
@@ -292,6 +325,7 @@ export class MemStorage implements IStorage {
       id,
       featured: insertProduct.featured ?? false,
       bestSeller: insertProduct.bestSeller ?? false,
+      trending: (insertProduct as any).trending ?? false,
       newArrival: insertProduct.newArrival ?? false,
       isUpcoming: insertProduct.isUpcoming ?? false,
       dropDate: insertProduct.dropDate ?? null,

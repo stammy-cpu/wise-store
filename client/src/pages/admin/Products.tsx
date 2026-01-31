@@ -234,6 +234,15 @@ export default function ProductsPage() {
                           <label className="flex items-center gap-2 cursor-pointer">
                             <input
                               type="checkbox"
+                              checked={(product as any).trending || false}
+                              onChange={() => handleToggleSection(product.id, 'trending' as keyof Product, (product as any).trending || false)}
+                              className="w-4 h-4 rounded border-white/10 bg-black/40"
+                            />
+                            <span className="text-xs uppercase tracking-wider">Trending</span>
+                          </label>
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="checkbox"
                               checked={product.newArrival || false}
                               onChange={() => handleToggleSection(product.id, 'newArrival', product.newArrival || false)}
                               className="w-4 h-4 rounded border-white/10 bg-black/40"

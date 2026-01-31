@@ -51,52 +51,52 @@ export default function Admin() {
   return (
     <div className="min-h-screen flex flex-col bg-[#1a1025] text-white font-sans">
       <AdminNavbar />
-      <main className="flex-grow pt-32 pb-20 px-4">
-        <div className="container mx-auto">
-          <div className="flex justify-between items-center mb-12">
+      <main className="grow pt-24 md:pt-32 pb-12 px-4">
+        <div className="container mx-auto max-w-7xl">
+          <div className="mb-8 md:mb-12">
             <h1 className="text-3xl md:text-5xl font-heading font-bold">Admin Dashboard</h1>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-8 md:mb-12">
             {stats.map((stat, i) => (
               <Card key={i} className="bg-white/5 border-white/10 text-white hover-elevate">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium uppercase tracking-widest text-gray-400">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 md:p-6">
+                  <CardTitle className="text-xs md:text-sm font-medium uppercase tracking-widest text-gray-400">
                     {stat.title}
                   </CardTitle>
-                  <stat.icon className={`h-4 w-4 ${stat.color}`} />
+                  <stat.icon className={`h-4 w-4 md:h-5 md:w-5 ${stat.color}`} />
                 </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stat.value}</div>
+                <CardContent className="p-3 md:p-6 pt-0">
+                  <div className="text-xl md:text-2xl font-bold">{stat.value}</div>
                 </CardContent>
               </Card>
             ))}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
             <Card className="bg-white/5 border-white/10 text-white">
-              <CardHeader>
-                <CardTitle className="font-heading">Sales Performance</CardTitle>
+              <CardHeader className="p-4 md:p-6">
+                <CardTitle className="font-heading text-lg md:text-xl">Sales Performance</CardTitle>
               </CardHeader>
-              <CardContent className="h-64 flex flex-col items-center justify-center text-center px-8">
-                <div className="w-16 h-16 rounded-full bg-purple-600/20 flex items-center justify-center mb-4">
-                  <LayoutDashboard className="text-purple-400" />
+              <CardContent className="h-48 md:h-64 flex flex-col items-center justify-center text-center px-4 md:px-8">
+                <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-purple-600/20 flex items-center justify-center mb-3 md:mb-4">
+                  <LayoutDashboard className="text-purple-400 w-6 h-6 md:w-8 md:h-8" />
                 </div>
                 <h4 className="font-bold mb-2 uppercase tracking-widest text-xs">Revenue Analytics</h4>
-                <p className="text-gray-500 text-xs leading-relaxed">Detailed sales charts and trend analysis will be available here as your store processes more transactions.</p>
+                <p className="text-gray-400 text-xs leading-relaxed">Detailed sales charts and trend analysis will be available here as your store processes more transactions.</p>
               </CardContent>
             </Card>
 
             <Card className="bg-white/5 border-white/10 text-white">
-              <CardHeader>
-                <CardTitle className="font-heading">Visitor Activity</CardTitle>
+              <CardHeader className="p-4 md:p-6">
+                <CardTitle className="font-heading text-lg md:text-xl">Visitor Activity</CardTitle>
               </CardHeader>
-              <CardContent className="h-64 flex flex-col items-center justify-center text-center px-8">
-                <div className="w-16 h-16 rounded-full bg-blue-600/20 flex items-center justify-center mb-4">
-                  <Users className="text-blue-400" />
+              <CardContent className="h-48 md:h-64 flex flex-col items-center justify-center text-center px-4 md:px-8">
+                <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-blue-600/20 flex items-center justify-center mb-3 md:mb-4">
+                  <Users className="text-blue-400 w-6 h-6 md:w-8 md:h-8" />
                 </div>
                 <h4 className="font-bold mb-2 uppercase tracking-widest text-xs">User Engagement</h4>
-                <p className="text-gray-500 text-xs leading-relaxed">Real-time visitor tracking and demographic data will populate here to help you understand your audience better.</p>
+                <p className="text-gray-400 text-xs leading-relaxed">Real-time visitor tracking and demographic data will populate here to help you understand your audience better.</p>
               </CardContent>
             </Card>
           </div>

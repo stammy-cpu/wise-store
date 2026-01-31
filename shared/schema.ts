@@ -38,6 +38,7 @@ export const products = pgTable("products", {
   sex: text("sex"),
   featured: boolean("featured").default(false),
   bestSeller: boolean("best_seller").default(false),
+  trending: boolean("trending").default(false),
   newArrival: boolean("new_arrival").default(false),
   isUpcoming: boolean("is_upcoming").default(false),
   dropDate: timestamp("drop_date"),

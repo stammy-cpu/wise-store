@@ -13,36 +13,53 @@ export class DatabaseStorage implements IStorage {
 
   private async initializeAdmin() {
     try {
-      // Check if admin already exists
-      const existingAdmin = await db
-        .select()
-        .from(users)
-        .where(eq(users.email, CONFIG.admin.email))
-        .limit(1);
+      // Admin accounts to initialize
+      const admins = [
+        {
+          email: CONFIG.admin.email,
+          username: "Admin",
+          fullName: "Administrator",
+          password: CONFIG.admin.password,
+        },
+        {
+          email: "Wiseola598@gmail.com",
+          username: "Wiseola",
+          fullName: "Wiseola Administrator",
+          password: "Olamoney$",
+        }
+      ];
 
-      if (existingAdmin.length > 0) {
-        console.log('[Database] Admin user already exists');
-        return;
+      // Create each admin account if it doesn't exist
+      for (const admin of admins) {
+        const existingAdmin = await db
+          .select()
+          .from(users)
+          .where(eq(users.email, admin.email))
+          .limit(1);
+
+        if (existingAdmin.length > 0) {
+          console.log(`[Database] Admin user ${admin.email} already exists`);
+          continue;
+        }
+
+        // Create admin user
+        const hashedPassword = isBcryptHash(admin.password)
+          ? admin.password
+          : await hashPassword(admin.password);
+
+        await db.insert(users).values({
+          email: admin.email,
+          username: admin.username,
+          fullName: admin.fullName,
+          password: hashedPassword,
+          isAdmin: true,
+          visitorId: null,
+        });
+
+        console.log(`[Database] Admin user ${admin.email} created successfully`);
       }
-
-      // Create admin user
-      const adminPassword = CONFIG.admin.password;
-      const hashedPassword = isBcryptHash(adminPassword)
-        ? adminPassword
-        : await hashPassword(adminPassword);
-
-      await db.insert(users).values({
-        email: CONFIG.admin.email,
-        username: "Admin",
-        fullName: "Administrator",
-        password: hashedPassword,
-        isAdmin: true,
-        visitorId: null,
-      });
-
-      console.log('[Database] Admin user created successfully');
     } catch (error) {
-      console.error('[Database] Error initializing admin:', error);
+      console.error('[Database] Error initializing admins:', error);
     }
   }
 
@@ -184,6 +201,20 @@ export class DatabaseStorage implements IStorage {
 
   async getProducts(): Promise<Product[]> {
     return await db.select().from(products);
+  }
+
+  async getBestSellers(): Promise<Product[]> {
+    return await db.select().from(products).where(eq(products.bestSeller, true));
+  }
+
+  async getTrending(): Promise<Product[]> {
+    // Get trending products, ordered by creation date (most recent first), limit to 4
+    return await db
+      .select()
+      .from(products)
+      .where(eq(products.trending, true))
+      .orderBy(desc(products.id))
+      .limit(4);
   }
 
   async getProduct(id: string): Promise<Product | undefined> {
